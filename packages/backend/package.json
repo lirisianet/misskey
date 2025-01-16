@@ -219,7 +219,7 @@
 		"@types/mime-types": "2.1.4",
 		"@types/ms": "0.7.34",
 		"@types/node": "22.9.0",
-		"@types/nodemailer": "6.4.16",
+		"@types/nodemailer": "6.4.17",
 		"@types/oauth": "0.9.6",
 		"@types/oauth2orize": "1.11.5",
 		"@types/oauth2orize-pkce": "0.1.2",
