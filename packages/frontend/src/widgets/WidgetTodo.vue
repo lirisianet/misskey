@@ -22,6 +22,7 @@ import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, Wid
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { i18n } from '@/i18n.js';
+import { misskeyApi } from '@/scripts/misskey-api.js'; // Misskey APIをインポート
 
 const name = 'todo';
 
@@ -42,15 +43,29 @@ const { widgetProps, configure } = useWidgetPropsManager(name, widgetPropsDef, p
 const todos = ref<string[]>([]);
 const newTodo = ref<string>('');
 
-const loadTodos = () => {
-	const savedTodos = localStorage.getItem('todos');
-	if (savedTodos) {
-		todos.value = JSON.parse(savedTodos);
+const loadTodos = async (retryCount = 3) => {
+	try {
+		const response = await misskeyApi('i/registry/get', { key: 'todo', scope: ['todowidgets'] });
+		if (response.value) {
+			const loadedTodos = JSON.parse(response.value);
+			if (Array.isArray(loadedTodos)) {
+				todos.value = loadedTodos;
+			}
+		}
+	} catch (error) {
+		console.error('Failed to load todos:', error);
+		if (retryCount > 0) {
+			setTimeout(() => loadTodos(retryCount - 1), 1000);
+		}
 	}
 };
 
-const saveTodos = () => {
-	localStorage.setItem('todos', JSON.stringify(todos.value));
+const saveTodos = async () => {
+	try {
+		await misskeyApi('i/registry/set', { key: 'todo', value: JSON.stringify(todos.value), scope: ['todowidgets'] });
+	} catch (error) {
+		console.error('Failed to save todos:', error);
+	}
 };
 
 const addTodo = () => {
