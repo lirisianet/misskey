@@ -250,9 +250,23 @@ export class SearchService {
 			});
 			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
 		} else if (this.sonicSearch) {
-			const results = await this.sonicSearch.query('notes', 'default', q, { limit: pagination.limit });
-			const notes = await this.notesRepository.findBy({ id: In(results) });
-			return notes;
+			return new Promise<MiNote[]>((resolve, reject) => {
+				this.sonicSearch!.connect({
+					connected: async () => {
+						try {
+							const results = await this.sonicSearch!.query('notes', 'default', q, { limit: pagination.limit });
+							const notes = await this.notesRepository.findBy({ id: In(results) });
+							resolve(notes);
+						} catch (err) {
+							reject(err);
+						}
+					},
+					error: (err: Error) => {
+						console.error('Sonic Search connection error:', err);
+						reject(err);
+					}
+				});
+			});
 		} else {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
 
