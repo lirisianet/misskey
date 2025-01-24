@@ -17,7 +17,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
-import { SonicChannelIngest, SonicChannelSearch, SonicChannelControl } from 'sonic-channel';
+import SonicChannel from 'sonic-channel';
 
 type K = string;
 type V = string | number | boolean;
@@ -66,9 +66,9 @@ function compileQuery(q: Q): string {
 export class SearchService {
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
-	private sonicIngest: SonicChannelIngest | null = null;
-	private sonicSearch: SonicChannelSearch | null = null;
-	private sonicControl: SonicChannelControl | null = null;
+	private sonicIngest: SonicChannel.Ingest | null = null;
+	private sonicSearch: SonicChannel.Search | null = null;
+	private sonicControl: SonicChannel.Control | null = null;
 
 	constructor(
 		@Inject(DI.config)
@@ -115,17 +115,17 @@ export class SearchService {
 		}
 
 		if (config.sonic && typeof config.sonic === 'object') {
-			this.sonicIngest = new SonicChannelIngest({
+			this.sonicIngest = new SonicChannel.Ingest({
 				host: config.sonic.host,
 				port: config.sonic.port,
 				auth: config.sonic.auth,
 			});
-			this.sonicSearch = new SonicChannelSearch({
+			this.sonicSearch = new SonicChannel.Search({
 				host: config.sonic.host,
 				port: config.sonic.port,
 				auth: config.sonic.auth,
 			});
-			this.sonicControl = new SonicChannelControl({
+			this.sonicControl = new SonicChannel.Control({
 				host: config.sonic.host,
 				port: config.sonic.port,
 				auth: config.sonic.auth,
@@ -182,7 +182,7 @@ export class SearchService {
 		}
 
 		if (this.sonicIngest) {
-			await this.sonicIngest.pop('notes', 'default', note.id);
+			await this.sonicIngest.pop('notes', 'default', note.id, note.text ?? '');
 		}
 	}
 
@@ -282,7 +282,7 @@ export class SearchService {
 	@bindThis
 	public async unindexNoteSonic(note: MiNote): Promise<void> {
 		if (this.sonicIngest) {
-			await this.sonicIngest.pop('notes', 'default', note.id);
+			await this.sonicIngest.pop('notes', 'default', note.id, note.text ?? '');
 		}
 	}
 
