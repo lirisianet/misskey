@@ -210,6 +210,17 @@ redis:
 #  index: ''
 #  scope: local
 
+#   ┌───────────────────────────┐
+#───┘ Sonic configuration └─────────────────────────────
+
+# Sonic search configuration.
+# Set to false to disable Sonic search.
+
+#sonic:
+#  host: localhost
+#  port: 1491
+#  auth: 'SecretPassword'
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 

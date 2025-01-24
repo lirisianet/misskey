@@ -17,6 +17,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
+import { SonicChannelIngest, SonicChannelSearch, SonicChannelControl } from 'sonic-channel';
 
 type K = string;
 type V = string | number | boolean;
@@ -65,6 +66,9 @@ function compileQuery(q: Q): string {
 export class SearchService {
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
+	private sonicIngest: SonicChannelIngest | null = null;
+	private sonicSearch: SonicChannelSearch | null = null;
+	private sonicControl: SonicChannelControl | null = null;
 
 	constructor(
 		@Inject(DI.config)
@@ -109,6 +113,24 @@ export class SearchService {
 		if (config.meilisearch?.scope) {
 			this.meilisearchIndexScope = config.meilisearch.scope;
 		}
+
+		if (config.sonic && typeof config.sonic === 'object') {
+			this.sonicIngest = new SonicChannelIngest({
+				host: config.sonic.host,
+				port: config.sonic.port,
+				auth: config.sonic.auth,
+			});
+			this.sonicSearch = new SonicChannelSearch({
+				host: config.sonic.host,
+				port: config.sonic.port,
+				auth: config.sonic.auth,
+			});
+			this.sonicControl = new SonicChannelControl({
+				host: config.sonic.host,
+				port: config.sonic.port,
+				auth: config.sonic.auth,
+			});
+		}
 	}
 
 	@bindThis
@@ -145,6 +167,10 @@ export class SearchService {
 				primaryKey: 'id',
 			});
 		}
+
+		if (this.sonicIngest && note.text) {
+			await this.sonicIngest.push('notes', 'default', note.id, note.text);
+		}
 	}
 
 	@bindThis
@@ -153,6 +179,10 @@ export class SearchService {
 
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.deleteDocument(note.id);
+		}
+
+		if (this.sonicIngest) {
+			await this.sonicIngest.pop('notes', 'default', note.id);
 		}
 	}
 
@@ -205,6 +235,10 @@ export class SearchService {
 				return true;
 			});
 			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
+		} else if (this.sonicSearch) {
+			const results = await this.sonicSearch.query('notes', 'default', q, { limit: pagination.limit });
+			const notes = await this.notesRepository.findBy({ id: In(results) });
+			return notes;
 		} else {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
 
@@ -236,5 +270,29 @@ export class SearchService {
 
 			return await query.limit(pagination.limit).getMany();
 		}
+	}
+
+	@bindThis
+	public async indexNoteSonic(note: MiNote): Promise<void> {
+		if (this.sonicIngest && note.text) {
+			await this.sonicIngest.push('notes', 'default', note.id, note.text);
+		}
+	}
+
+	@bindThis
+	public async unindexNoteSonic(note: MiNote): Promise<void> {
+		if (this.sonicIngest) {
+			await this.sonicIngest.pop('notes', 'default', note.id);
+		}
+	}
+
+	@bindThis
+	public async searchNoteSonic(q: string, pagination: { limit?: number }): Promise<MiNote[]> {
+		if (this.sonicSearch) {
+			const results = await this.sonicSearch.query('notes', 'default', q, { limit: pagination.limit });
+			const notes = await this.notesRepository.findBy({ id: In(results) });
+			return notes;
+		}
+		return [];
 	}
 }
