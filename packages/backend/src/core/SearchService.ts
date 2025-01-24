@@ -169,7 +169,14 @@ export class SearchService {
 		}
 
 		if (this.sonicIngest && note.text) {
-			await this.sonicIngest.push('notes', 'default', note.id, note.text);
+			this.sonicIngest.connect({
+				connected: async () => {
+					await this.sonicIngest!.push('notes', 'default', note.id, note.text!);
+				},
+				error: (err: Error) => {
+					console.error('Sonic Ingest connection error:', err);
+				}
+			});
 		}
 	}
 
@@ -182,7 +189,14 @@ export class SearchService {
 		}
 
 		if (this.sonicIngest) {
-			await this.sonicIngest.pop('notes', 'default', note.id, note.text ?? '');
+			this.sonicIngest.connect({
+				connected: async () => {
+					await this.sonicIngest!.pop('notes', 'default', note.id, note.text ?? '');
+				},
+				error: (err: Error) => {
+					console.error('Sonic Ingest connection error:', err);
+				}
+			});
 		}
 	}
 
