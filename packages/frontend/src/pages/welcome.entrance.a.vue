@@ -4,24 +4,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="meta" :class="$style.root">
-	<MkFeaturedPhotos :class="$style.bg"/>
-	<XTimeline :class="$style.tl"/>
-	<div :class="$style.shape1"></div>
-	<div :class="$style.shape2"></div>
-	<div :class="$style.logoWrapper">
-		<div :class="$style.poweredBy">Powered by</div>
-		<img :src="misskeymiryremixsvg" :class="$style.cherrypick"/>
+<div v-if="meta" class="rsqzvsbo">
+	<MkFeaturedPhotos class="bg"/>
+	<XTimeline v-if="meta.entranceShowFeatured" class="tl"/>
+	<div class="shape1"></div>
+	<div class="shape2"></div>
+	<div class="logo-wrapper">
+		<div class="powered-by">Powered by</div>
+		<img :src="misskeymiryremixsvg" class="misskey"/>
 	</div>
-	<div :class="$style.contents">
+	<div v-if="meta.entranceShowEmojis" class="emojis">
+		<MkEmoji
+			v-for="emoji in (meta.entranceSelectEmojis.length > 0 ? meta.entranceSelectEmojis : ['👍', '❤', '😆', '🎉', '🍮'])"
+			:key="emoji"
+			:normal="true"
+			:noStyle="true"
+			:emoji="emoji"
+		/>
+	</div>
+	<div v-if="meta.entranceShowDashboard" class="contents">
 		<MkVisitorDashboard/>
 	</div>
-	<div v-if="instances && instances.length > 0" :class="$style.federation">
+	<div v-if="instances && instances.length > 0 && meta.entranceShowFederation" class="federation">
 		<MarqueeText :duration="40">
 			<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
-				<!--<MkInstanceCardMini :instance="instance"/>-->
-				<img v-if="instance.iconUrl" :class="$style.federationInstanceIcon" :src="getInstanceIcon(instance)" alt=""/>
-				<span class="_monospace">{{ instance.host }}</span>
+				<!-- <MkInstanceCardMini :instance="instance"/> -->
+				<img v-if="instance.iconUrl" class="icon" :src="getInstanceIcon(instance)" alt=""/>
+				<span class="name _monospace">{{ instance.host }}</span>
 			</MkA>
 		</MarqueeText>
 	</div>
@@ -52,13 +61,16 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 	return getProxiedImageUrl(instance.iconUrl, 'preview');
 }
 
-misskeyApiGet('federation/instances', {
-	sort: '+pubSub',
-	limit: 20,
-	blocked: false,
-}).then(_instances => {
-	instances.value = _instances;
-});
+if (meta.entranceShowFederation) {
+	misskeyApiGet('federation/instances', {
+		sort: '+pubSub',
+		limit: 20,
+		blocked: 'false',
+	}).then(_instances => {
+		instances.value = _instances;
+	});
+}
+
 </script>
 
 <style lang="scss" module>

@@ -5677,6 +5677,34 @@ export type components = {
       moderatorInactivityLimitDays: number;
       reversiVersion: string;
       customRobotsTxt: string | null;
+      /** @default false */
+      entranceShowTimeLine: boolean;
+      /** @default false */
+      entranceShowFeatured: boolean;
+      /** @default false */
+      entranceShowEmojis: boolean;
+      /**
+       * @default [
+       *   "👍",
+       *   "❤",
+       *   "😆",
+       *   "🎉",
+       *   "🍮"
+       * ]
+       */
+      entranceSelectEmojis: string[];
+      /** @default false */
+      entranceShowStats: boolean;
+      /** @default false */
+      entranceShowFederation: boolean;
+      /** @default true */
+      entranceShowDashboard: boolean;
+      /** @default true */
+      entranceShowSignup: boolean;
+      /** @default true */
+      entranceShowAnotherInstance: boolean;
+      /** @default true */
+      entranceShowSignin: boolean;
     };
     MetaDetailedOnly: {
       features?: {
@@ -9531,6 +9559,16 @@ export type operations = {
             customFsTotal: number | null;
             validateMinimumUsernameLength: number;
             enableIpCheck: boolean;
+            entranceShowTimeLine: boolean;
+            entranceShowFeatured: boolean;
+            entranceShowEmojis: boolean;
+            entranceSelectEmojis: string[];
+            entranceShowStats: boolean;
+            entranceShowFederation: boolean;
+            entranceShowDashboard: boolean;
+            entranceShowSignup: boolean;
+            entranceShowAnotherInstance: boolean;
+            entranceShowSignin: boolean;
           };
         };
       };
@@ -11925,6 +11963,16 @@ export type operations = {
           enableFsTotal?: boolean;
           customFsTotal?: number | null;
           enableIpCheck?: boolean;
+          entranceShowTimeLine?: boolean;
+          entranceShowFeatured?: boolean;
+          entranceShowEmojis?: boolean;
+          entranceSelectEmojis?: string[];
+          entranceShowStats?: boolean;
+          entranceShowFederation?: boolean;
+          entranceShowDashboard?: boolean;
+          entranceShowSignup?: boolean;
+          entranceShowAnotherInstance?: boolean;
+          entranceShowSignin?: boolean;
         };
       };
     };

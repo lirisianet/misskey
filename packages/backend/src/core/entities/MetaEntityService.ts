@@ -141,6 +141,16 @@ export class MetaEntityService {
 			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
 			maxFileSize: this.config.maxFileSize,
 			federation: this.meta.federation,
+			entranceShowTimeLine: instance.entranceShowTimeLine,
+			entranceShowFeatured: instance.entranceShowFeatured,
+			entranceShowEmojis: instance.entranceShowEmojis,
+			entranceSelectEmojis: instance.entranceSelectEmojis,
+			entranceShowStats: instance.entranceShowStats,
+			entranceShowFederation: instance.entranceShowFederation,
+			entranceShowDashboard: instance.entranceShowDashboard,
+			entranceShowSignup: instance.entranceShowSignup,
+			entranceShowAnotherInstance: instance.entranceShowAnotherInstance,
+			entranceShowSignin: instance.entranceShowSignin,
 		};
 
 		return packed;

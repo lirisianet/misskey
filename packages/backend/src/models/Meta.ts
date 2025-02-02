@@ -933,4 +933,56 @@ export class MiMeta {
 		default: false,
 	})
 	public enableIpCheck: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public entranceShowTimeLine: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public entranceShowFeatured: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public entranceShowEmojis: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		array: true,
+		default: '{ "👍", "❤", "😆", "🎉", "🍮" }',
+	})
+	public entranceSelectEmojis: string[];
+
+	@Column('boolean', {
+		default: false,
+	})
+	public entranceShowStats: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public entranceShowFederation: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public entranceShowDashboard: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public entranceShowSignup: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public entranceShowAnotherInstance: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public entranceShowSignin: boolean;
 }

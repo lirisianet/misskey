@@ -24,14 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-else-if="instance.federation === 'none'" warn>{{ i18n.ts.federationDisabled }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
-				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
-				<!-- <MkButton :class="$style.mainAction" full rounded link to="https://misskey-hub.net/servers/">{{ i18n.ts.exploreOtherServers }}</MkButton> -->
-				<MkButton :class="$style.mainAction" full rounded @click="mainRouter.push('/explore')">{{ i18n.ts.explore }}</MkButton>
-				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
+				<MkButton v-if="instance.entranceShowSignup" :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
+				<MkButton v-if="instance.entranceShowAnotherInstance" :class="$style.mainAction" full rounded link to="https://misskey-hub.net/servers/">{{ i18n.ts.exploreOtherServers }}</MkButton>
+				<MkButton v-if="instance.entranceShowSignin" :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 			</div>
 		</div>
 	</div>
-	<div v-if="stats" :class="$style.stats">
+	<div v-if="instance.entranceShowStats && stats" :class="$style.stats">
 		<div :class="[$style.statsItem, $style.panel]">
 			<div :class="$style.statsItemLabel">{{ i18n.ts.users }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalUsersCount"/></div>
@@ -41,13 +40,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalNotesCount"/></div>
 		</div>
 	</div>
-	<div v-if="instance.policies.ltlAvailable" :class="[$style.tl, $style.panel]">
+	<div v-if="instance.policies.ltlAvailable && instance.entranceShowTimeLine" :class="[$style.tl, $style.panel]">
 		<div :class="$style.tlHeader">{{ i18n.ts.letsLookAtTimeline }}</div>
 		<div :class="$style.tlBody">
 			<MkTimeline src="local"/>
 		</div>
 	</div>
-	<div :class="$style.panel">
+	<div v-if="instance.entranceShowStats" :class="$style.panel">
 		<XActiveUsersChart/>
 	</div>
 </div>
@@ -57,6 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'cherrypick-js';
 import { instanceName } from '@@/js/config.js';
+import type { MenuItem } from '@/types/menu.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -73,9 +73,11 @@ import { openInstanceMenu } from '@/ui/_common_/common.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
-misskeyApi('stats', {}).then((res) => {
-	stats.value = res;
-});
+if (instance.entranceShowStats) {
+	misskeyApi('stats', {}).then((res) => {
+		stats.value = res;
+	});
+}
 
 function signin() {
 	const { dispose } = os.popup(XSigninDialog, {

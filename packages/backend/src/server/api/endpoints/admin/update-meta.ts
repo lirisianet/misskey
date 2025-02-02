@@ -262,6 +262,16 @@ export const paramDef = {
 		enableFsTotal: { type: 'boolean' },
 		customFsTotal: { type: 'integer', nullable: true },
 		enableIpCheck: { type: 'boolean' },
+		entranceShowTimeLine: { type: 'boolean' },
+		entranceShowFeatured: { type: 'boolean' },
+		entranceShowEmojis: { type: 'boolean' },
+		entranceSelectEmojis: { type: 'array', items: { type: 'string' } },
+		entranceShowStats: { type: 'boolean' },
+		entranceShowFederation: { type: 'boolean' },
+		entranceShowDashboard: { type: 'boolean' },
+		entranceShowSignup: { type: 'boolean' },
+		entranceShowAnotherInstance: { type: 'boolean' },
+		entranceShowSignin: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -954,6 +964,46 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableIpCheck !== undefined) {
 				set.enableIpCheck = ps.enableIpCheck;
+			}
+
+			if (ps.entranceShowTimeLine !== undefined) {
+				set.entranceShowTimeLine = ps.entranceShowTimeLine;
+			}
+
+			if (ps.entranceShowFeatured !== undefined) {
+				set.entranceShowFeatured = ps.entranceShowFeatured;
+			}
+
+			if (ps.entranceShowEmojis !== undefined) {
+				set.entranceShowEmojis = ps.entranceShowEmojis;
+			}
+
+			if (Array.isArray(ps.entranceSelectEmojis)) {
+				set.entranceSelectEmojis = ps.entranceSelectEmojis;
+			}
+
+			if (ps.entranceShowStats !== undefined) {
+				set.entranceShowStats = ps.entranceShowStats;
+			}
+
+			if (ps.entranceShowFederation !== undefined) {
+				set.entranceShowFederation = ps.entranceShowFederation;
+			}
+
+			if (ps.entranceShowDashboard !== undefined) {
+				set.entranceShowDashboard = ps.entranceShowDashboard;
+			}
+
+			if (ps.entranceShowSignup !== undefined) {
+				set.entranceShowSignup = ps.entranceShowSignup;
+			}
+
+			if (ps.entranceShowAnotherInstance !== undefined) {
+				set.entranceShowAnotherInstance = ps.entranceShowAnotherInstance;
+			}
+
+			if (ps.entranceShowSignin !== undefined) {
+				set.entranceShowSignin = ps.entranceShowSignin;
 			}
 
 			const before = await this.metaService.fetch(true);
