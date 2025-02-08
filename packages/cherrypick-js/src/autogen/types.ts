@@ -5316,7 +5316,6 @@ export type components = {
       canEditNote: boolean;
       scheduleNoteMax: number;
       canReadFollowHistory: boolean;
-      canRequestCustomEmojis: boolean;
     };
     ReversiGameLite: {
       /** Format: id */
