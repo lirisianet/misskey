@@ -54,6 +54,7 @@ import type {
 	AdminEmojiAddResponse,
 	AdminEmojiAddsRequest,
 	AdminEmojiAddsResponse,
+	AdminEmojiAddDraftRequest,
 	AdminEmojiCopyRequest,
 	AdminEmojiCopyResponse,
 	AdminEmojiDeleteBulkRequest,
@@ -675,6 +676,7 @@ export type Endpoints = {
 	'admin/emoji/add-aliases-bulk': { req: AdminEmojiAddAliasesBulkRequest; res: EmptyResponse };
 	'admin/emoji/add': { req: AdminEmojiAddRequest; res: AdminEmojiAddResponse };
 	'admin/emoji/adds': { req: AdminEmojiAddsRequest; res: AdminEmojiAddsResponse };
+	'admin/emoji/add-draft': { req: AdminEmojiAddDraftRequest; res: EmptyResponse };
 	'admin/emoji/copy': { req: AdminEmojiCopyRequest; res: AdminEmojiCopyResponse };
 	'admin/emoji/delete-bulk': { req: AdminEmojiDeleteBulkRequest; res: EmptyResponse };
 	'admin/emoji/delete': { req: AdminEmojiDeleteRequest; res: EmptyResponse };

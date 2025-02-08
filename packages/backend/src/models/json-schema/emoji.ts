@@ -44,6 +44,10 @@ export const packedEmojiSimpleSchema = {
 				format: 'id',
 			},
 		},
+		draft: {
+			type: 'boolean',
+			optional: false, nullable: true,
+		},
 	},
 } as const;
 
@@ -101,6 +105,10 @@ export const packedEmojiDetailedSchema = {
 				optional: false, nullable: false,
 				format: 'id',
 			},
+		},
+		draft: {
+			type: 'boolean',
+			optional: false, nullable: true,
 		},
 	},
 } as const;

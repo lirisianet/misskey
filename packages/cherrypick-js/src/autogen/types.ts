@@ -345,6 +345,15 @@ export type paths = {
      */
     post: operations['admin___emoji___adds'];
   };
+  '/admin/emoji/add-draft': {
+    /**
+     * admin/emoji/add-draft
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
+     */
+    post: operations['admin___emoji___add-draft'];
+  };
   '/admin/emoji/copy': {
     /**
      * admin/emoji/copy
@@ -5134,6 +5143,7 @@ export type components = {
       localOnly?: boolean;
       isSensitive?: boolean;
       roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
+      draft: boolean | null;
     };
     EmojiDetailed: {
       /** Format: id */
@@ -5148,6 +5158,7 @@ export type components = {
       isSensitive: boolean;
       localOnly: boolean;
       roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+      draft: boolean | null;
     };
     Flash: {
       /**
@@ -5305,6 +5316,7 @@ export type components = {
       canEditNote: boolean;
       scheduleNoteMax: number;
       canReadFollowHistory: boolean;
+      canRequestCustomEmojis: boolean;
     };
     ReversiGameLite: {
       /** Format: id */
@@ -7871,6 +7883,63 @@ export type operations = {
     };
   };
   /**
+   * admin/emoji/add-draft
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:emoji*
+   */
+  'admin___emoji___add-draft': {
+    requestBody: {
+      content: {
+        'application/json': {
+          name: string;
+          /** @description Use `null` to reset the category. */
+          category?: string | null;
+          aliases?: string[];
+          license?: string | null;
+          /** Format: misskey:id */
+          fileId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * admin/emoji/copy
    * @description No description provided.
    *
@@ -8515,6 +8584,7 @@ export type operations = {
           isSensitive?: boolean;
           localOnly?: boolean;
           roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
+          draft?: boolean;
         };
       };
     };

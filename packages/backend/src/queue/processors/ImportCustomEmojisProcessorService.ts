@@ -104,6 +104,7 @@ export class ImportCustomEmojisProcessorService {
 						isSensitive: emojiInfo.isSensitive,
 						localOnly: emojiInfo.localOnly,
 						roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+						draft: false,
 					});
 				} catch (e) {
 					if (e instanceof Error || typeof e === 'string') {

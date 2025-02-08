@@ -12,7 +12,7 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiEmoji } from '@/models/Emoji.js';
-import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
+import type { EmojisRepository, MiRole, MiUser, DriveFilesRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -34,6 +34,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -68,6 +71,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
+		draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		// システムユーザーとして再アップロード
@@ -92,6 +96,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			license: data.license,
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
+			draft: data.draft,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
 		});
 
@@ -124,8 +129,10 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		category?: string | null;
 		aliases?: string[];
 		license?: string | null;
+		fileId?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
+		draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<
 		null
@@ -136,6 +143,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			? await this.getEmojiById(data.id)
 			: await this.getEmojiByName(data.name!);
 		if (emoji === null) return 'NO_SUCH_EMOJI';
+		const driveFile = data.fileId !== null ? await this.driveFilesRepository.findOneBy({ id: data.fileId }) : null;
 		const id = emoji.id;
 
 		// IDと絵文字名が両方指定されている場合は絵文字名の変更を行うため重複チェックが必要
@@ -145,20 +153,34 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			if (isDuplicate) return 'SAME_NAME_EMOJI_EXISTS';
 		}
 
-		await this.emojisRepository.update(emoji.id, {
-			updatedAt: new Date(),
-			name: data.name,
-			category: data.category,
-			aliases: data.aliases,
-			license: data.license,
-			isSensitive: data.isSensitive,
-			localOnly: data.localOnly,
-			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
-			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
-			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
-			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
-		});
-
+		if (driveFile !== null) {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				name: data.name,
+				category: data.category,
+				aliases: data.aliases,
+				license: data.license,
+				isSensitive: data.isSensitive,
+				localOnly: data.localOnly,
+				originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
+				publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
+				type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
+				draft: data.draft,
+			});
+		} else {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				name: data.name,
+				category: data.category,
+				aliases: data.aliases,
+				license: data.license,
+				isSensitive: data.isSensitive,
+				localOnly: data.localOnly,
+				draft: data.draft,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
+			});
+		}
+		
 		this.localEmojisCache.refresh();
 
 		const packed = await this.emojiEntityService.packDetailed(emoji.id);

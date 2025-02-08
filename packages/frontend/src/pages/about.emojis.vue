@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
+	<MkButton v-if="$i && (!$i.isModerator && !$i.policies.canManageCustomEmojis && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
 
 	<div class="query">
 		<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
@@ -22,21 +23,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkFoldableSection v-if="searchEmojis">
 		<template #header>{{ i18n.ts.searchResult }}</template>
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji"/>
+			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 		</div>
 	</MkFoldableSection>
 
 	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
 		<template #header>{{ category || i18n.ts.other }}</template>
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji"/>
+			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 		</div>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, ref } from 'vue';
+import { watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'cherrypick-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -45,6 +46,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
+import * as os from '@/os';
 
 const customEmojiTags = getCustomEmojiTags();
 const q = ref('');
@@ -71,6 +73,29 @@ function search() {
 		searchEmojis.value = customEmojis.value.filter(emoji => (emoji.name.includes(q.value) || emoji.aliases.includes(q.value)) && [...selectedTags.value].every(t => emoji.aliases.includes(t)));
 	}
 }
+
+const edit = () => {
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+		emoji: {
+			id: '',
+			name: '',
+			category: null,
+			aliases: [],
+			license: '',
+			url: '',
+			host: null,
+			isSensitive: false,
+			localOnly: false,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+			draft: true,
+		},
+		isRequest: true,
+	}, {
+		done: result => {
+			window.location.reload();
+		},
+	});
+};
 
 function toggleTag(tag) {
 	if (selectedTags.value.has(tag)) {

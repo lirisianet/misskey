@@ -57,6 +57,7 @@ export type AdminEmojiAddRequest = operations['admin___emoji___add']['requestBod
 export type AdminEmojiAddResponse = operations['admin___emoji___add']['responses']['200']['content']['application/json'];
 export type AdminEmojiAddsRequest = operations['admin___emoji___adds']['requestBody']['content']['application/json'];
 export type AdminEmojiAddsResponse = operations['admin___emoji___adds']['responses']['200']['content']['application/json'];
+export type AdminEmojiAddDraftRequest = operations['admin___emoji___add-draft']['requestBody']['content']['application/json'];
 export type AdminEmojiCopyRequest = operations['admin___emoji___copy']['requestBody']['content']['application/json'];
 export type AdminEmojiCopyResponse = operations['admin___emoji___copy']['responses']['200']['content']['application/json'];
 export type AdminEmojiDeleteBulkRequest = operations['admin___emoji___delete-bulk']['requestBody']['content']['application/json'];

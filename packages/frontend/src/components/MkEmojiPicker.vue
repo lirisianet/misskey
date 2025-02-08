@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).map(e => `:${e.name}:`))"
+				:emojis="computed(() => customEmojis.filter(emoji => !emoji.draft).filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).filter(filterAvailable).map(e => `:${e.name}:`))"
 				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
@@ -183,6 +183,9 @@ const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
 const customEmojiFolderRoot: CustomEmojiFolderTree = { value: '', category: '', children: [] };
 
+const category = ref<string | null>(null);
+const filterAvailable = (emoji: Misskey.entities.EmojiSimple) => true;
+
 function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): CustomEmojiFolderTree {
 	const parts = input.split('/').map(p => p.trim());
 	let currentNode: CustomEmojiFolderTree = root;
@@ -223,7 +226,7 @@ watch(q, () => {
 
 	const searchCustom = () => {
 		const max = 100;
-		const emojis = customEmojis.value;
+		const emojis = customEmojis.value.filter(emoji => !emoji.draft);
 		const matches = new Set<Misskey.entities.EmojiSimple>();
 
 		const exactMatch = emojis.find(emoji => emoji.name === newQ);

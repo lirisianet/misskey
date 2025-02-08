@@ -30,13 +30,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 						<template #default="{items}">
 							<div class="ldhfsamy">
-								<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
-									<img :src="`/emoji/${emoji.name}.webp`" class="img" :alt="emoji.name"/>
-									<div class="body">
-										<div class="name _monospace">{{ emoji.name }}</div>
-										<div class="info">{{ emoji.category }}</div>
-									</div>
-								</button>
+								<div v-for="emoji in items" :key="emoji.id">
+									<button v-if="emoji.draft" class="emoji _panel _button emoji-draft" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+										<img :src="`/emoji/${emoji.name}.webp`" class="img" :alt="emoji.name"/>
+										<div class="body">
+											<div class="name _monospace">{{ emoji.name + ' (draft)' }}</div>
+											<div class="info">{{ emoji.category }}</div>
+										</div>
+									</button>
+									<button v-else class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
+										<img :src="emoji.url" class="img" :alt="emoji.name"/>
+										<div class="body">
+											<div class="name _monospace">{{ emoji.name }}</div>
+											<div class="info">{{ emoji.category }}</div>
+										</div>
+									</button>
+								</div>
 							</div>
 						</template>
 					</MkPagination>
@@ -57,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #default="{items}">
 							<div class="ldhfsamy">
 								<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
-									<img :src="`/emoji/${emoji.name}@${emoji.host}.webp`" class="img" :alt="emoji.name"/>
+									<img :src="emoji.url" class="img" :alt="emoji.name"/>
 									<div class="body">
 										<div class="name _monospace">{{ emoji.name }}</div>
 										<div class="info">{{ emoji.host }}</div>
@@ -149,6 +158,7 @@ const edit = (emoji) => {
 				emojisPaginationComponent.value?.updateItem(result.updated.id, (oldEmoji) => ({
 					...oldEmoji,
 					...result.updated,
+					isRequest: false,
 				}));
 			} else if (result.deleted) {
 				emojisPaginationComponent.value?.removeItem(emoji.id);
@@ -348,12 +358,13 @@ definePageMetadata(() => ({
 			grid-gap: 12px;
 			margin: var(--MI-margin) 0;
 
-			> .emoji {
+			div > .emoji {
 				display: flex;
 				align-items: center;
 				padding: 11px;
 				text-align: left;
 				border: solid 1px var(--MI_THEME-panel);
+				width: 100%;
 
 				&:hover {
 					border-color: var(--MI_THEME-inputBorderHover);
@@ -436,5 +447,11 @@ definePageMetadata(() => ({
 			}
 		}
 	}
+}
+
+.emoji-draft {
+	--c: rgb(255 196 0 / 15%);;
+	background-image: linear-gradient(45deg,var(--c) 16.67%,transparent 16.67%,transparent 50%,var(--c) 50%,var(--c) 66.67%,transparent 66.67%,transparent 100%);
+	background-size: 16px 16px;
 }
 </style>

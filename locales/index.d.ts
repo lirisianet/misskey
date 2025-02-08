@@ -4751,6 +4751,10 @@ export interface Locale extends ILocale {
      */
     "manageCustomEmojis": string;
     /**
+     * カスタム絵文字のリクエスト
+     */
+    "requestCustomEmojis": string;
+    /**
      * アバターデコレーションの管理
      */
     "manageAvatarDecorations": string;
@@ -4950,6 +4954,10 @@ export interface Locale extends ILocale {
      * ライセンス
      */
     "license": string;
+    /**
+     * ドラフト
+     */
+    "draft": string;
     /**
      * お気に入り解除しますか？
      */
@@ -8022,6 +8030,10 @@ export interface Locale extends ILocale {
              * カスタム絵文字の管理
              */
             "canManageCustomEmojis": string;
+            /**
+             * カスタム絵文字のリクエスト
+             */
+            "canRequestCustomEmojis": string;
             /**
              * アバターデコレーションの管理
              */

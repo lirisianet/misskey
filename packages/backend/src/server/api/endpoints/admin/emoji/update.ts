@@ -56,10 +56,12 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
 			type: 'string',
 		} },
+		draft: { type: 'boolean' },
 	},
 	anyOf: [
 		{ required: ['id'] },
 		{ required: ['name'] },
+		{ required: ['draft'] },
 	],
 } as const;
 
@@ -92,6 +94,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				fileId: ps.fileId ?? null,
+				draft: ps.draft ?? false,
 			}, me);
 
 			switch (error) {
@@ -99,8 +103,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				case 'NO_SUCH_EMOJI': throw new ApiError(meta.errors.noSuchEmoji);
 				case 'SAME_NAME_EMOJI_EXISTS': throw new ApiError(meta.errors.sameNameEmojiExists);
 			}
-			// 網羅性チェック
-			const mustBeNever: never = error;
 		});
 	}
 }

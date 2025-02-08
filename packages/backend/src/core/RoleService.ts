@@ -70,6 +70,7 @@ export type RolePolicies = {
 	canImportMuting: boolean;
 	canImportUserLists: boolean;
 	canReadFollowHistory: boolean;
+	canRequestCustomEmojis: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -111,6 +112,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportMuting: true,
 	canImportUserLists: true,
 	canReadFollowHistory: false,
+	canRequestCustomEmojis: false,
 };
 
 @Injectable()
@@ -425,6 +427,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
 			canReadFollowHistory: calc('canReadFollowHistory', vs => vs.some(v => v === true)),
+			canRequestCustomEmojis: calc('canRequestCustomEmojis', vs => vs.some(v => v === true)),
 		};
 	}
 

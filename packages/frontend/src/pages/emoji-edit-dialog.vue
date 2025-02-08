@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="windowEl"
 	:initialWidth="400"
 	:initialHeight="500"
+	:withOkButton="true"
 	:canResize="true"
 	@close="windowEl?.close()"
 	@closed="emit('closed')"
@@ -73,6 +74,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
+			<MkSwitch v-if="!isRequest" v-model="draft" :disabled="isRequest">
+				{{ i18n.ts.draft }}
+			</MkSwitch>
+			<MkButton v-if="!isRequest" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
 </MkWindow>
@@ -97,6 +102,7 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
 	emoji?: Misskey.entities.EmojiDetailed,
+	isRequest: boolean,
 }>();
 
 const emit = defineEmits<{
@@ -114,6 +120,9 @@ const localOnly = ref(props.emoji ? props.emoji.localOnly : false);
 const roleIdsThatCanBeUsedThisEmojiAsReaction = ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 const rolesThatCanBeUsedThisEmojiAsReaction = ref<Misskey.entities.Role[]>([]);
 const file = ref<Misskey.entities.DriveFile>();
+const chooseFile = ref<Misskey.entities.DriveFile | null>(null);
+const draft = ref(props.emoji?.draft ?? false);
+const isRequest = ref(props.isRequest);
 
 watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
@@ -201,6 +210,64 @@ async function del() {
 		});
 		windowEl.value?.close();
 	});
+}
+
+async function add() {
+	const ret = await os.api('admin/emoji/add-draft', {
+		name: name.value,
+		category: category.value,
+		aliases: aliases.value.split(' '),
+		license: license.value === '' ? null : license.value,
+		fileId: chooseFile.value?.id,
+	});
+
+	emit('done', {
+		updated: {
+			id: ret.id,
+			name: name.value,
+			category: category.value,
+			aliases: aliases.value.split(' '),
+			license: license.value === '' ? null : license.value,
+			draft: true,
+		},
+	});
+
+	windowEl.value?.close();
+}
+
+async function update() {
+	await os.apiWithDialog('admin/emoji/update', {
+		id: props.emoji.id,
+		name: name.value,
+		category: category.value,
+		aliases: aliases.value.split(' '),
+		license: license.value === '' ? null : license.value,
+		fileId: chooseFile.value?.id,
+		draft: draft.value,
+	});
+
+	emit('done', {
+		updated: {
+			id: props.emoji.id,
+			name: name.value,
+			category: category.value,
+			aliases: aliases.value.split(' '),
+			license: license.value === '' ? null : license.value,
+			draft: draft.value,
+		},
+	});
+
+	windowEl.value?.close();
+}
+
+function ok() {
+	if (isRequest.value) {
+		if (chooseFile.value !== null && name.value.match(/^[a-zA-Z0-9_]+$/)) {
+			add();
+		}
+	} else {
+		done();
+	}
 }
 </script>
 
