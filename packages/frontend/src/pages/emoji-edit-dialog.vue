@@ -155,7 +155,16 @@ async function removeRole(role: Misskey.entities.RoleLite, ev: Event) {
 }
 
 async function done() {
-	const params = {
+	const params: {
+		name: string;
+		category: string | null;
+		aliases: string[];
+		license: string | null;
+		isSensitive: boolean;
+		localOnly: boolean;
+		roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+		fileId?: string;
+	} = {
 		name: name.value,
 		category: category.value === '' ? null : category.value,
 		aliases: aliases.value.split(' ').filter(x => x !== ''),
@@ -170,7 +179,7 @@ async function done() {
 	}
 
 	if (props.emoji) {
-		await os.apiWithDialog('admin/emoji/update', {
+		await misskeyApi('admin/emoji/update', {
 			id: props.emoji.id,
 			...params,
 		});
@@ -184,7 +193,7 @@ async function done() {
 
 		windowEl.value?.close();
 	} else {
-		const created = await os.apiWithDialog('admin/emoji/add', params);
+		const created = await misskeyApi('admin/emoji/add', params);
 
 		emit('done', {
 			created: created,
@@ -213,12 +222,12 @@ async function del() {
 }
 
 async function add() {
-	const ret = await os.api('admin/emoji/add-draft', {
+	const ret = await misskeyApi<{ id: string }>('admin/emoji/add-draft', {
 		name: name.value,
 		category: category.value,
 		aliases: aliases.value.split(' '),
 		license: license.value === '' ? null : license.value,
-		fileId: chooseFile.value?.id,
+		fileId: chooseFile.value?.id ?? '',
 	});
 
 	emit('done', {
@@ -236,7 +245,7 @@ async function add() {
 }
 
 async function update() {
-	await os.apiWithDialog('admin/emoji/update', {
+	await misskeyApi('admin/emoji/update', {
 		id: props.emoji.id,
 		name: name.value,
 		category: category.value,
