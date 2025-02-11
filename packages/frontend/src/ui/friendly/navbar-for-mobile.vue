@@ -57,6 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
 import { version } from '@@/js/config.js';
+import { compareVersions } from 'compare-versions';
 import { openInstanceMenu } from '@/ui/_common_/common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
@@ -77,9 +78,9 @@ const otherMenuItemIndicated = computed(() => {
 });
 const controlPanelIndicated = ref(false);
 const releasesCherryPick = ref(null);
-const bannerDisplay = ref('');
+const bannerDisplay = ref(defaultStore.state.bannerDisplay);
 
-if ($i.isAdmin ?? $i.isModerator) {
+if ($i && ($i.isAdmin ?? $i.isModerator)) {
 	misskeyApi('admin/abuse-user-reports', {
 		state: 'unresolved',
 		limit: 1,
@@ -109,20 +110,6 @@ watch(defaultStore.reactiveState.bannerDisplay, () => {
 
 function toggleBannerDisplay() {
 	bannerDisplay.value = defaultStore.state.bannerDisplay;
-}
-
-function compareVersions(v1: string, v2: string): number {
-	const v1Parts = v1.split('.').map(Number);
-	const v2Parts = v2.split('.').map(Number);
-
-	for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
-		const part1 = v1Parts[i] || 0;
-		const part2 = v2Parts[i] || 0;
-
-		if (part1 < part2) return -1;
-		if (part1 > part2) return 1;
-	}
-	return 0;
 }
 
 function openAccountMenu(ev: MouseEvent) {

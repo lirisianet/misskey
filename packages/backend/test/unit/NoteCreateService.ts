@@ -61,7 +61,7 @@ describe('NoteCreateService', () => {
 			renoteUserId: null,
 			renoteUserHost: null,
 			updatedAt: null,
-			updatedAtHistory: [],
+			updatedAtHistory: null,
 			noteEditHistory: [],
 			hasEvent: false,
 			disableRightClick: false,

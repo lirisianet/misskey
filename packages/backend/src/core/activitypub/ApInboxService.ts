@@ -361,9 +361,6 @@ export class ApInboxService {
 		// アナウンス先が許可されているかチェック
 		if (!this.utilityService.isFederationAllowedUri(uri)) return;
 
-		const relays = await this.relayService.getAcceptedRelays();
-		const fromRelay = !!actor.inbox && relays.map(r => r.inbox).includes(actor.inbox);
-
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
@@ -391,12 +388,6 @@ export class ApInboxService {
 
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
 				return 'skip: invalid actor for this activity';
-			}
-
-			if (fromRelay) {
-				const noteObj = await this.noteEntityService.pack(renote);
-				this.globalEventService.publishNotesStream(noteObj);
-				return;
 			}
 
 			this.logger.info(`Creating the (Re)Note: ${uri}`);

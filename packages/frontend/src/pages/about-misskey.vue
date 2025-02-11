@@ -114,7 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<FormSection v-if="instance.repositoryUrl !== 'https://github.com/catsmiry/misskey'">
 						<div class="_gaps_s">
 							<MkInfo>
-								{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name }) }}
+								{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? '' }) }}
 							</MkInfo>
 							<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
 								<template #icon><i class="ti ti-code"></i></template>
@@ -190,64 +190,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</span>
 							</a>
 						</div>
-					</FormSection>
-					<FormSection>
-						<template #label>Special thanks</template>
-						<div
-							style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));grid-gap:24px;align-items:center;">
-							<div>
-								<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/"
-									target="_blank"><img style="width: 100%;"
-										src="https://assets.misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
-							</div>
-							<div>
-								<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/"
-									target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/xserver.png"
-										alt="XServer"></a>
-							</div>
-							<div>
-								<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img
-										style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
-							</div>
-							<div>
-								<a style="display: inline-block;" class="pepabo" title="GMO Pepabo" href="https://pepabo.com/"
-									target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/gmo_pepabo.svg"
-										alt="GMO Pepabo"></a>
-							</div>
+				</FormSection>
+				<FormSection>
+					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
+					<p style="font-weight: bold;">
+						<span style="color: var(--CP-cherry);">Cherry</span>
+						<span style="color: var(--CP-pick);">Pick</span>
+					</p>
+					<div :class="$style.patronsWithIcon">
+						<div v-for="patron in patronsWithIconWithCherryPick" :class="$style.patronWithIcon">
+							<img :src="patron.icon" :class="$style.patronIcon">
+							<span :class="$style.patronName">{{ patron.name }}</span>
 						</div>
-					</FormSection>
-					<FormSection>
-						<template #label>
-							<Mfm text="$[jelly ❤]" /> {{ i18n.ts._aboutMisskey.patrons }}
-						</template>
-						<p style="font-weight: bold">CherryPick</p>
-						<div :class="$style.patronsWithIcon">
-							<div v-for="patron in patronsWithIconWithCherryPick" :class="$style.patronWithIcon">
-								<img :src="patron.icon" :class="$style.patronIcon">
-								<span :class="$style.patronName">{{ patron.name }}</span>
-							</div>
+					</div>
+					<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
+						<div v-for="patron in patronsWithCherryPick" :key="patron">{{ patron }}</div>
+					</div>
+					<p style="font-weight: bold; padding-top: 20px; color: var(--CP-misskey);"><b>Misskey</b></p>
+					<div :class="$style.patronsWithIcon">
+						<div v-for="patron in patronsWithIconWithMisskey" :class="$style.patronWithIcon">
+							<img :src="patron.icon" :class="$style.patronIcon">
+							<span :class="$style.patronName">{{ patron.name }}</span>
 						</div>
-						<div
-							style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
-							<div v-for="patron in patronsWithCherryPick" :key="patron">{{ patron }}</div>
+					</div>
+					<div
+						style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
+						<div v-for="patron in patronsWithCherryPick" :key="patron">{{ patron }}</div>
+					</div>
+					<p style="font-weight: bold; padding-top: 20px"><b>Misskey</b></p>
+					<div :class="$style.patronsWithIcon">
+						<div v-for="patron in patronsWithIconWithMisskey" :class="$style.patronWithIcon">
+							<img :src="patron.icon" :class="$style.patronIcon">
+							<span :class="$style.patronName">{{ patron.name }}</span>
 						</div>
-						<p style="font-weight: bold; padding-top: 20px"><b>Misskey</b></p>
-						<div :class="$style.patronsWithIcon">
-							<div v-for="patron in patronsWithIconWithMisskey" :class="$style.patronWithIcon">
-								<img :src="patron.icon" :class="$style.patronIcon">
-								<span :class="$style.patronName">{{ patron.name }}</span>
-							</div>
-						</div>
-						<div
-							style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
-							<div v-for="patron in patronsWithMisskey" :key="patron">{{ patron }}</div>
-						</div>
-						<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
-					</FormSection>
-				</div>
-			</MkSpacer>
-		</div>
-	</MkStickyContainer>
+					</div>
+					<div
+						style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
+						<div v-for="patron in patronsWithMisskey" :key="patron">{{ patron }}</div>
+					</div>
+					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
+				</FormSection>
+			</div> 
+		</MkSpacer>
+	</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
@@ -266,13 +252,22 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
 
-//エラー対策
-interface Patron {
-	name: string;
-	icon: string;
-}
-
-const patronsWithIconWithCherryPick: Patron[] = [];
+const patronsWithIconWithCherryPick = [{
+	name: 'Etone Sabasappugawa',
+	icon: 'https://s3.kokonect.link/cherrypick/patreons/b3bd97949b664c81857cc7286552c65e.png',
+}, {
+	name: 'okin',
+	icon: 'https://s3.kokonect.link/cherrypick/patreons/c185756cf04d483b9c7687d98ce1103c.png',
+}, {
+	name: 'Kitty',
+	icon: 'https://s3.kokonect.link/cherrypick/patreons/5f8e4bac9cf34984bc59875f6d8d5c1d.gif',
+}, {
+	name: 'breadguy',
+	icon: 'https://s3.kokonect.link/cherrypick/patreons/04cd46fba69c4953949cd1cc15d8c691.jpg',
+}, {
+	name: 'Evgeni Ku',
+	icon: 'https://s3.kokonect.link/cherrypick/patreons/f8c53a4244844192be76e7cbbb57bb48.jpeg',
+}];
 
 const patronsWithIconWithMisskey = [{
 	name: 'カイヤン',
@@ -345,7 +340,7 @@ const patronsWithIconWithMisskey = [{
 	icon: 'https://assets.misskey-hub.net/patrons/f981ab0159fb4e2c998e05f7263e1cd9.jpg',
 }, {
 	name: '猫吉よりお',
-	icon: 'https://assets.misskey-hub.net/patrons/a11518b3b34b4536a4bdd7178ba76a7b.jpg',
+	icon: 'https://assets.misskey-hub.net/patrons/a11518b3b34d4536a4bdd7178ba76a7b.jpg',
 }, {
 	name: '有栖かずみ',
 	icon: 'https://assets.misskey-hub.net/patrons/9240e8e0ba294a8884143e99ac7ed6a0.jpg',
@@ -403,6 +398,9 @@ const patronsWithIconWithMisskey = [{
 }, {
 	name: '秋瀬カヲル',
 	icon: 'https://assets.misskey-hub.net/patrons/0f22aeb866484f4fa51db6721e3f9847.jpg',
+}, {
+	name: '新井　治',
+	icon: 'https://assets.misskey-hub.net/patrons/d160876f20394674a17963a0e609600a.jpg',
 }];
 
 const patronsWithCherryPick = [
@@ -516,6 +514,7 @@ const patronsWithMisskey = [
 	'こまつぶり',
 	'まゆつな空高',
 	'asata',
+	'ruru',
 ];
 
 let isKokonect = false;

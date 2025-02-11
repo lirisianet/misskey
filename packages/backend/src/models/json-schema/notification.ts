@@ -343,6 +343,20 @@ export const packedNotificationSchema = {
 			type: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ['scheduleNote'],
+			},
+			errorType: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
 				enum: ['app'],
 			},
 			body: {
@@ -435,10 +449,31 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 				enum: ['groupInvited'],
 			},
-			invitation: {
-				type: 'string',
+			user: {
+				type: 'object',
+				ref: 'UserLite',
 				optional: false, nullable: false,
-				format: 'id',
+			},
+			invitation: {
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+						optional: false, nullable: false,
+						format: 'id',
+					},
+					group: {
+						type: 'object',
+						properties: {
+							name: {
+								type: 'string',
+								optional: false, nullable: false,
+							},
+						},
+						optional: false, nullable: false,
+					},
+				},
+				optional: false, nullable: false,
 			},
 		},
 	}],

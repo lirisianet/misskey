@@ -125,13 +125,11 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 	public async remoteUserUpdate(user: MiUser) {
 		const userHost = user.host ?? '';
 		const instance = await this.instancesRepository.findOneBy({ host: userHost });
-		if (!instance) return;
 
-		const instanceHost = instance.host;
 		const userHostUrl = `https://${user.host}`;
 		const showUserApiUrl = `${userHostUrl}/api/users/show`;
 
-		if (!['misskey', 'cherrypick', 'sharkey', 'yojo-art'].includes(<string>instance.softwareName)) return;
+		if (!['misskey', 'cherrypick', 'sharkey', 'yojo-art'].includes(<string>instance?.softwareName)) return;
 
 		const res = await this.httpRequestService.send(showUserApiUrl, {
 			method: 'POST',
@@ -149,6 +147,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 			return;
 		}
 
+		const instanceHost = instance!.host;
 		const decorationApiUrl = `https://${instanceHost}/api/get-avatar-decorations`;
 		const allRes = await this.httpRequestService.send(decorationApiUrl, {
 			method: 'POST',

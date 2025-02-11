@@ -39,6 +39,12 @@ export default function(app: App) {
 	app.component('WidgetTodo', defineAsyncComponent(() => import('./WidgetTodo.vue')));
 }
 
+// 連合関連のウィジェット（連合無効時に隠す）
+export const federationWidgets = [
+	'federation',
+	'instanceCloud',
+];
+
 export const widgets = [
 	'profile',
 	'instanceInfo',
@@ -54,8 +60,6 @@ export const widgets = [
 	'photos',
 	'digitalClock',
 	'unixClock',
-	'federation',
-	'instanceCloud',
 	'postForm',
 	'slideshow',
 	'serverMetric',
@@ -71,4 +75,6 @@ export const widgets = [
 	'search',
 	'dice',
 	'todo',
+
+	...federationWidgets,
 ];

@@ -98,7 +98,7 @@ async function toggleReaction(ev: MouseEvent) {
 			if (oldReaction !== props.reaction) {
 				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
-					reaction: `:${reactionName.value}:`,
+					reaction: props.reaction,
 				});
 			}
 		});
@@ -121,7 +121,7 @@ async function toggleReaction(ev: MouseEvent) {
 }
 
 function stealReaction(ev: MouseEvent) {
-	if (!props.note.user.host && $i && !($i.isAdmin ?? $i.policies.canManageCustomEmojis)) return;
+	if (!props.note.user.host && $i && !($i.isAdmin || $i.policies.canManageCustomEmojis)) return;
 
 	os.popupMenu([{
 		type: 'label',

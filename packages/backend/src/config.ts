@@ -110,6 +110,13 @@ type Source = {
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
 	pidFile: string;
+
+	logging?: {
+		sql?: {
+			disableQueryTruncation? : boolean,
+			enableQueryParamLogging? : boolean,
+		}
+	}
 };
 
 export type Config = {
@@ -173,6 +180,12 @@ export type Config = {
 	apFileBaseUrl: string | undefined;
 	proxyRemoteFiles: boolean | undefined;
 	signToActivityPubGet: boolean | undefined;
+	logging?: {
+		sql?: {
+			disableQueryTruncation? : boolean,
+			enableQueryParamLogging? : boolean,
+		}
+	}
 
 	version: string;
 	basedMisskeyVersion: string;
@@ -322,6 +335,7 @@ export function loadConfig(): Config {
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
+		logging: config.logging,
 	};
 }
 

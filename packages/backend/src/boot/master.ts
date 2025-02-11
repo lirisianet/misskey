@@ -30,28 +30,29 @@ const bootLogger = logger.createSubLogger('boot', 'magenta');
 const themeColor = chalk.hex('#ffa9c3');
 
 function greet() {
-	if (!envOption.quiet) {
-		//#region CherryPick logo
-		const v = `v${meta.version}`;
-		console.log(chalk.hex('#ffa9c3').bold('  _________ .__                                ') + chalk.hex('#95e3e8').bold('__________.__        __    '));
-		console.log(chalk.hex('#ffa9c3').bold(' \\_   ___ \\|  |__   __________________ ___.__.') + chalk.hex('#95e3e8').bold('\\______   \\__| ____ |  | __'));
-		console.log(chalk.hex('#ffa9c3').bold(' /    \\  \\/|  |  \\_/ __ \\_  __ \\_  __ <   |  |') + chalk.hex('#95e3e8').bold(' |     ___/  |/ ___\\|  |/ /'));
-		console.log(chalk.hex('#ffa9c3').bold(' \\     \\___|   Y  \\  ___/|  | \\/|  | \\/\\___  |') + chalk.hex('#95e3e8').bold(' |    |   |  \\  \\___|    < '));
-		console.log(chalk.hex('#ffa9c3').bold('  \\______  /___|  /\\___  >__|   |__|   / ____|') + chalk.hex('#95e3e8').bold(' |____|   |__|\\___  >__|_ \\'));
-		console.log(chalk.hex('#ffa9c3').bold('         \\/     \\/     \\/              \\/     ') + chalk.hex('#95e3e8').bold('                  \\/     \\/'));
-		//#endregion
+    if (!envOption.quiet) {
+        //#region Misskey Miry Remix logo
+        console.log(chalk.hex('#ffa9c3').bold(' ___  ____         _               ___  ____             ______               _      '));
+        console.log(chalk.hex('#ffa9c3').bold('|  \\/  (_)       | |              |  \\/  (_)            | ___ \\             (_)     '));
+        console.log(chalk.hex('#ffa9c3').bold('| .  . |_ ___ ___| | _____ _   _  | .  . |_ _ __ _   _  | |_/ /___ _ __ ___  ___  __'));
+        console.log(chalk.hex('#ffa9c3').bold('| |\\/| | / __/ __| |/ / _ \\ | | | | |\\/| | | \'__| | | | |    // _ \\ \'_ ` _ \\| \\ \\/ /'));
+        console.log(chalk.hex('#ffa9c3').bold('| |  | | \\__ \\__ \\   <  __/ |_| | | |  | | | |  | |_| | | |\\ \\  __/ | | | | | |>  < '));
+        console.log(chalk.hex('#ffa9c3').bold('|_|  |_/_|___/___/_|\\_\\___|\\__, | \\_|  |_/_|_|   \\__, | \\_| \\_\\___|_| |_| |_|_/_/\\_\\'));
+        console.log(chalk.hex('#ffa9c3').bold('                            __/ |                 __/ |                              '));
+        console.log(chalk.hex('#ffa9c3').bold('                           |___/                 |___/                               '));
+        //#endregion
 
-		console.log(chalk.hex('#ffa9c3').bold(' Cherry') + chalk.hex('#95e3e8').bold('Pick') + (' is an open-source decentralized microblogging platform based from') + (chalk.hex('#9ec23f').bold(' Misskey') + ('.')));
-		console.log(chalk.hex('#ffbb00')(' If you like ') + chalk.hex('#ffa9c3').bold('Cherry') + chalk.hex('#95e3e8').bold('Pick') + chalk.hex('#ffbb00')(', please donate to support development. https://www.patreon.com/noridev & https://www.paypal.me/noridev & https://toss.me/noridev'));
-		// console.log(chalk.hex('#ffa9c3').bold(' KOKO') + chalk.hex('#95e3e8').bold('NECT') + chalk.hex('#ffa9c3')(' with') + chalk.hex('#95e3e8').bold(' NoriDev.'));
+        console.log(chalk.hex('#ffa9c3').bold(' Misskey') + chalk.hex('#95e3e8').bold('Miry Remix') + (' is an open-source decentralized microblogging platform based from') + (chalk.hex('#9ec23f').bold(' Misskey') + ('.')));
+        console.log(chalk.hex('#ffbb00')(' If you like ') + chalk.hex('#ffa9c3').bold('Misskey') + chalk.hex('#95e3e8').bold('Miry Remix') + chalk.hex('#ffbb00'));
+        // console.log(chalk.hex('#ffa9c3').bold(' KOKO') + chalk.hex('#95e3e8').bold('NECT') + chalk.hex('#ffa9c3')(' with') + chalk.hex('#95e3e8').bold(' NoriDev.'));
 
-		console.log('');
-		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
-	}
+        console.log('');
+        console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
+    }
 
-	bootLogger.info('Welcome to CherryPick!');
-	bootLogger.info(`CherryPick v${meta.version}`, null, true);
-	bootLogger.info(`Based on Misskey v${meta.basedMisskeyVersion}`, null, true);
+    bootLogger.info('Welcome to Misskey Miry Remix!');
+    bootLogger.info(`Misskey Miry Remix v${meta.version}`, null, true);
+    bootLogger.info(`Based on Misskey v${meta.basedMisskeyVersion}`, null, true);
 }
 
 /**
@@ -94,25 +95,36 @@ export async function masterMain() {
 		});
 	}
 
-	if (envOption.disableClustering) {
+	bootLogger.info(
+		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,
+	);
+
+	if (!envOption.disableClustering) {
+		// clusterモジュール有効時
+
 		if (envOption.onlyServer) {
-			await server();
+			// onlyServer かつ enableCluster な場合、メインプロセスはforkのみに制限する(listenしない)。
+			// ワーカープロセス側でlistenすると、メインプロセスでポートへの着信を受け入れてワーカープロセスへの分配を行う動作をする。
+			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
+			// see: https://nodejs.org/api/cluster.html#cluster
 		} else if (envOption.onlyQueue) {
 			await jobQueue();
-		} else {
-			await server();
-			await jobQueue();
-		}
-	} else {
-		if (envOption.onlyServer) {
-			// nop
-		} else if (envOption.onlyQueue) {
-			// nop
 		} else {
 			await server();
 		}
 
 		await spawnWorkers(config.clusterLimit);
+	} else {
+		// clusterモジュール無効時
+
+		if (envOption.onlyServer) {
+			await server();
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
 	}
 
 	if (envOption.onlyQueue) {

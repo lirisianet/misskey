@@ -210,7 +210,7 @@ export class UserFollowingService implements OnModuleInit {
 
 					// フォローリクエストを送った側（送信者）の履歴
 					if (this.userEntityService.isLocalUser(follower) && followerPolicies.canReadFollowHistory) {
-						await this.followRequestHistoryRepository.insert({
+						this.followRequestHistoryRepository.insert({
 							id: this.idService.gen(),
 							type: 'sent',
 							fromUserId: follower.id,
@@ -221,7 +221,7 @@ export class UserFollowingService implements OnModuleInit {
 
 					// フォローリクエストを受け取った側（受信者）の履歴
 					if (this.userEntityService.isLocalUser(followee) && followeePolicies.canReadFollowHistory) {
-						await this.followRequestHistoryRepository.insert({
+						this.followRequestHistoryRepository.insert({
 							id: this.idService.gen(),
 							type: 'received',
 							fromUserId: follower.id,
@@ -232,7 +232,7 @@ export class UserFollowingService implements OnModuleInit {
 
 					// フォローリクエストを承認された側（送信者）の履歴
 					if (this.userEntityService.isLocalUser(follower) && followerPolicies.canReadFollowHistory) {
-						await this.followRequestHistoryRepository.insert({
+						this.followRequestHistoryRepository.insert({
 							id: this.idService.gen(),
 							type: 'wasApproved',
 							fromUserId: follower.id,
@@ -243,7 +243,7 @@ export class UserFollowingService implements OnModuleInit {
 
 					// フォローリクエストを承認した側（受信者）の履歴
 					if (this.userEntityService.isLocalUser(followee) && followeePolicies.canReadFollowHistory) {
-						await this.followRequestHistoryRepository.insert({
+						this.followRequestHistoryRepository.insert({
 							id: this.idService.gen(),
 							type: 'approved',
 							fromUserId: follower.id,
@@ -412,13 +412,7 @@ export class UserFollowingService implements OnModuleInit {
 				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'follow', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'follow', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(follower.id, 'follow', { user: packed });
 			});
 		}
 
@@ -426,13 +420,7 @@ export class UserFollowingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(async packed => {
 				this.globalEventService.publishMainStream(followee.id, 'followed', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'followed', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(followee.id, 'followed', { user: packed });
 			});
 
 			// 通知を作成
@@ -491,13 +479,7 @@ export class UserFollowingService implements OnModuleInit {
 				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packed });
 			});
 		}
 
@@ -696,7 +678,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		// 送信者にはsentタイプの履歴のみ保存
 		if (this.userEntityService.isLocalUser(follower) && followerPolicies.canReadFollowHistory) {
-			await this.followRequestHistoryRepository.insert({
+			this.followRequestHistoryRepository.insert({
 				id: this.idService.gen(),
 				type: 'sent',
 				fromUserId: follower.id,
@@ -707,7 +689,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		// 受信者にはreceivedタイプの履歴のみ保存
 		if (this.userEntityService.isLocalUser(followee) && followeePolicies.canReadFollowHistory) {
-			await this.followRequestHistoryRepository.insert({
+			this.followRequestHistoryRepository.insert({
 				id: this.idService.gen(),
 				type: 'received',
 				fromUserId: follower.id,
@@ -786,7 +768,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		// フォローリクエストを承認された側（送信者）の履歴
 		if (this.userEntityService.isLocalUser(follower) && followerPolicies.canReadFollowHistory) {
-			await this.followRequestHistoryRepository.insert({
+			this.followRequestHistoryRepository.insert({
 				id: this.idService.gen(),
 				type: 'wasApproved',
 				fromUserId: follower.id,
@@ -797,7 +779,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		// フォローリクエストを承認した側（受信者）の履歴
 		if (this.userEntityService.isLocalUser(followee) && followeePolicies.canReadFollowHistory) {
-			await this.followRequestHistoryRepository.insert({
+			this.followRequestHistoryRepository.insert({
 				id: this.idService.gen(),
 				type: 'approved',
 				fromUserId: follower.id,
@@ -853,7 +835,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		// フォローリクエストを拒否した側（受信者）の履歴
 		if (this.userEntityService.isLocalUser(user) && policies.canReadFollowHistory) {
-			await this.followRequestHistoryRepository.insert({
+			this.followRequestHistoryRepository.insert({
 				id: this.idService.gen(),
 				type: 'rejected',
 				fromUserId: follower.id,
@@ -925,7 +907,7 @@ export class UserFollowingService implements OnModuleInit {
 
 		// リモートユーザーから拒否された履歴を保存
 		if (this.userEntityService.isLocalUser(follower) && followerPolicies.canReadFollowHistory) {
-			await this.followRequestHistoryRepository.insert({
+			this.followRequestHistoryRepository.insert({
 				id: this.idService.gen(),
 				type: 'wasRejected',
 				fromUserId: follower.id,
@@ -984,13 +966,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
-
-		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
-		for (const webhook of webhooks) {
-			this.queueService.userWebhookDeliver(webhook, 'unfollow', {
-				user: packedFollowee,
-			});
-		}
+		this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packedFollowee });
 	}
 
 	@bindThis

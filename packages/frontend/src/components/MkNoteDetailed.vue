@@ -80,51 +80,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkAcct :user="appearNote.user" />
 						</div>
 					</div>
-				</div>
-				<div style="display: flex; align-items: flex-end; margin-left: auto;">
-					<div :class="$style.noteHeaderBody">
-						<div :class="$style.noteHeaderInfo">
-							<span v-if="appearNote.updatedAt" style="margin-right: 0.5em;"><i
-									v-tooltip="i18n.tsx.noteUpdatedAt({ date: (new Date(appearNote.updatedAt)).toLocaleDateString(), time: (new Date(appearNote.updatedAt)).toLocaleTimeString() })"
-									class="ti ti-pencil"></i></span>
-							<span v-if="appearNote.deleteAt" style="margin-right: 0.5em;"><i
-									v-tooltip="`${i18n.ts.scheduledNoteDelete}: ${(new Date(appearNote.deleteAt)).toLocaleString()}`"
-									class="ti ti-bomb"></i></span>
-							<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;">
-								<i v-if="appearNote.visibility === 'home'" v-tooltip="i18n.ts._visibility[appearNote.visibility]"
-									class="ti ti-home"></i>
-								<i v-else-if="appearNote.visibility === 'followers'"
-									v-tooltip="i18n.ts._visibility[appearNote.visibility]" class="ti ti-lock"></i>
-								<i v-else-if="appearNote.visibility === 'specified'" ref="specified"
-									v-tooltip="i18n.ts._visibility[appearNote.visibility]" class="ti ti-mail"></i>
-							</span>
-							<span v-if="note.reactionAcceptance != null" style="margin-left: 0.5em;"
-								:class="{ [$style.danger]: ['nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote', 'likeOnly'].includes(<string>note.reactionAcceptance) }"
-								:title="i18n.ts.reactionAcceptance">
-								<i v-if="note.reactionAcceptance === 'likeOnlyForRemote'" v-tooltip="i18n.ts.likeOnlyForRemote"
-									class="ti ti-heart-plus"></i>
-								<i v-else-if="note.reactionAcceptance === 'nonSensitiveOnly'" v-tooltip="i18n.ts.nonSensitiveOnly"
-									class="ti ti-icons"></i>
-								<i v-else-if="note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote'"
-									v-tooltip="i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote" class="ti ti-heart-plus"></i>
-								<i v-else-if="note.reactionAcceptance === 'likeOnly'" v-tooltip="i18n.ts.likeOnly"
-									class="ti ti-heart"></i>
-							</span>
-							<span v-if="appearNote.localOnly" style="margin-left: 0.5em;"><i
-									v-tooltip="i18n.ts._visibility['disableFederation']" class="ti ti-rocket-off"></i></span>
-						</div>
-						<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" @click="showOnRemote" />
-					</div>
-					<!--
-					<div :class="$style.noteHeaderUsernameAndBadgeRoles">
-						<div :class="$style.noteHeaderUsername">
-							<MkAcct :user="appearNote.user"/>
-						</div>
-						<div v-if="appearNote.user.badgeRoles" :class="$style.noteHeaderBadgeRoles">
-							<img v-for="(role, i) in appearNote.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
+					<div style="display: flex; align-items: flex-end; margin-left: auto;">
+						<div :class="$style.noteHeaderBody">
+							<div :class="$style.noteHeaderInfo">
+								<span v-if="appearNote.updatedAt" style="margin-right: 0.5em;"><i
+										v-tooltip="i18n.tsx.noteUpdatedAt({ date: (new Date(appearNote.updatedAt)).toLocaleDateString(), time: (new Date(appearNote.updatedAt)).toLocaleTimeString() })"
+										class="ti ti-pencil"></i></span>
+								<span v-if="appearNote.deleteAt" style="margin-right: 0.5em;"><i
+										v-tooltip="`${i18n.ts.scheduledNoteDelete}: ${(new Date(appearNote.deleteAt)).toLocaleString()}`"
+										class="ti ti-bomb"></i></span>
+								<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;">
+									<i v-if="appearNote.visibility === 'home'" v-tooltip="i18n.ts._visibility[appearNote.visibility]"
+										class="ti ti-home"></i>
+									<i v-else-if="appearNote.visibility === 'followers'"
+										v-tooltip="i18n.ts._visibility[appearNote.visibility]" class="ti ti-lock"></i>
+									<i v-else-if="appearNote.visibility === 'specified'" ref="specified"
+										v-tooltip="i18n.ts._visibility[appearNote.visibility]" class="ti ti-mail"></i>
+								</span>
+								<span v-if="note.reactionAcceptance != null" style="margin-left: 0.5em;"
+									:class="{ [$style.danger]: ['nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote', 'likeOnly'].includes(<string>note.reactionAcceptance) }"
+									:title="i18n.ts.reactionAcceptance">
+									<i v-if="note.reactionAcceptance === 'likeOnlyForRemote'"
+										v-tooltip="i18n.ts.likeOnlyForRemote" class="ti ti-heart-plus"></i>
+									<i v-else-if="note.reactionAcceptance === 'nonSensitiveOnly'"
+										v-tooltip="i18n.ts.nonSensitiveOnly" class="ti ti-icons"></i>
+									<i v-else-if="note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote'"
+										v-tooltip="i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote" class="ti ti-heart-plus"></i>
+									<i v-else-if="note.reactionAcceptance === 'likeOnly'" v-tooltip="i18n.ts.likeOnly"
+										class="ti ti-heart"></i>
+								</span>
+								<span v-if="appearNote.localOnly" style="margin-left: 0.5em;"><i
+										v-tooltip="i18n.ts._visibility['disableFederation']" class="ti ti-rocket-off"></i></span>
+							</div>
+							<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance" @click="showOnRemote"/>
 						</div>
 					</div>
-					-->
 				</div>
 			</header>
 			<div :class="$style.noteContent">
@@ -971,6 +961,7 @@ function showOnRemote() {
 }
 
 .noteHeaderName {
+	display: flex;
 	font-weight: bold;
 	line-height: 1.3;
 	margin: 0 .5em 0 0;
@@ -1030,6 +1021,7 @@ function showOnRemote() {
 .noteHeaderBadgeRole {
 	height: 1.3em;
 	vertical-align: -20%;
+	border-radius: 0.4em;
 
 	&+.noteHeaderBadgeRole {
 		margin-left: 0.2em;
@@ -1269,6 +1261,7 @@ function showOnRemote() {
 .badgeRole {
 	height: 1.3em;
 	vertical-align: -20%;
+	border-radius: 0.4em;
 
 	&+.badgeRole {
 		margin-left: 0.2em;

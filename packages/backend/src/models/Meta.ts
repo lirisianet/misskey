@@ -405,6 +405,18 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public libreTranslateEndPoint: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public libreTranslateApiKey: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public termsOfServiceUrl: string | null;
 
 	@Column('varchar', {
@@ -825,7 +837,7 @@ export class MiMeta {
 	public disablePublicNoteWhenInactive: boolean;
 
 	@Column('integer', {
-		nullable: false,
+		default: 7,
 	})
 	public moderatorInactivityLimitDays: number;
 

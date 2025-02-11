@@ -494,6 +494,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	showSoftWordMutedWord: {
+		where: 'device',
+		default: false,
+	},
 	showUnreadNotificationsCount: {
 		where: 'deviceAccount',
 		default: false,
@@ -581,6 +585,18 @@ export const defaultStore = markRaw(new Storage('base', {
 	disableNyaize: {
 		where: 'device',
 		default: false,
+	},
+	searchEngine: {
+		where: 'device',
+		default: 'google' as 'google' | 'bing' | 'yahoo' | 'baidu' | 'naver' | 'daum' | 'duckduckgo' | 'other',
+	},
+	searchEngineUrl: {
+		where: 'device',
+		default: 'https://www.ecosia.org/search?',
+	},
+	searchEngineUrlQuery: {
+		where: 'device',
+		default: 'q',
 	},
 
 	// - Settings/Appearance
