@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSection>
 			-->
 					<FormSection>
-						<template #label>CherryPick</template>
+						<template #label>Misskey Miry Remix</template>
 						<div class="_gaps_s">
 							<FormLink to="https://github.com/catsmiry/misskey" external>
 								<template #icon><i class="ti ti-code"></i></template>
@@ -191,6 +191,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</a>
 						</div>
 				</FormSection>
+				<!--
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
 					<p style="font-weight: bold;">
@@ -230,6 +231,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
+			-->
 			</div> 
 		</MkSpacer>
 	</div>
@@ -251,6 +253,7 @@ import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
+import { donateCherryPick } from '@/scripts/donate-cherrypick.js';
 
 const patronsWithIconWithCherryPick = [{
 	name: 'Etone Sabasappugawa',
@@ -573,28 +576,6 @@ function iLoveMisskey() {
 function getTreasure() {
 	thereIsTreasure.value = false;
 	claimAchievement('foundTreasure');
-}
-
-function donateCherryPick(ev: MouseEvent) {
-	os.popupMenu([{
-		text: 'Patreon',
-		icon: 'ti ti-pig-money',
-		action: () => {
-			window.open('https://www.patreon.com/noridev', '_blank');
-		},
-	}, {
-		text: 'Paypal',
-		icon: 'ti ti-pig-money',
-		action: () => {
-			window.open('https://www.paypal.me/noridev', '_blank');
-		},
-	}, {
-		text: 'Toss (Korea)',
-		icon: 'ti ti-pig-money',
-		action: () => {
-			window.open('https://toss.me/noridev', '_blank');
-		},
-	}], ev.currentTarget ?? ev.target);
 }
 
 onMounted(() => {

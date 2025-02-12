@@ -298,6 +298,10 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		customRobotsTxt: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 	},
 } as const;
 

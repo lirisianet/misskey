@@ -251,6 +251,7 @@ export const paramDef = {
 		moderatorInactivityLimitDays: { type: 'integer', nullable: false },
 		bubbleInstances: { type: 'array', items: { type: 'string' } },
 		allowedAvatarDecorationHosts: { type: 'array', items: { type: 'string' } },
+		customRobotsTxt: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
@@ -897,6 +898,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				set.forciblyFollowedUsers = ps.forciblyFollowedUsers.filter(Boolean);
+			}
+
+			if (ps.customRobotsTxt !== undefined) {
+				set.customRobotsTxt = ps.customRobotsTxt;
 			}
 
 			const before = await this.metaService.fetch(true);

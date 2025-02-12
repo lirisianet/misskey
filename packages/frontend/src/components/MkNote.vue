@@ -393,9 +393,13 @@ const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.vi
 const expandOnNoteClick = defaultStore.state.expandOnNoteClick;
 const router = useRouter();
 const renoteCollapsed = ref(
-	defaultStore.state.collapseRenotes && isRenote && (
-		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
-		(appearNote.value.myReaction != null)
+	isRenote && (
+		defaultStore.state.forceCollapseAllRenotes || (
+			defaultStore.state.collapseRenotes && (
+				($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
+				(appearNote.value.myReaction != null)
+			)
+		)
 	),
 );
 const replyCollapsed = ref(
@@ -418,16 +422,16 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
 */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
-	if (mutedWords == null) return false;
+	if (mutedWords != null) {
+		const result = checkWordMute(noteToCheck, $i, mutedWords);
+		if (Array.isArray(result)) return result;
 
-	const result = checkWordMute(noteToCheck, $i, mutedWords);
-	if (Array.isArray(result)) return result;
+		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
+		if (Array.isArray(replyResult)) return replyResult;
 
-	const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-	if (Array.isArray(replyResult)) return replyResult;
-
-	const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-	if (Array.isArray(renoteResult)) return renoteResult;
+		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
+		if (Array.isArray(renoteResult)) return renoteResult;
+	}
 
 	if (checkOnly) return false;
 

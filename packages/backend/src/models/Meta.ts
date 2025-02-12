@@ -871,4 +871,9 @@ export class MiMeta {
 		length: 1024, array: true, default: '{}',
 	})
 	public forciblyFollowedUsers: string[];
+
+	@Column('varchar', {
+		length: 2048, nullable: true,
+	})
+	public customRobotsTxt: string | null;
 }

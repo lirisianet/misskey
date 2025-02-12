@@ -665,6 +665,10 @@ export const meta = {
 					type: 'string',
 				},
 			},
+			customRobotsTxt: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	},
 } as const;
@@ -845,6 +849,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				allowedAvatarDecorationHosts: instance.allowedAvatarDecorationHosts,
 				defaultFollowedUsers: instance.defaultFollowedUsers,
 				forciblyFollowedUsers: instance.forciblyFollowedUsers,
+				customRobotsTxt: instance.customRobotsTxt,
 			};
 		});
 	}

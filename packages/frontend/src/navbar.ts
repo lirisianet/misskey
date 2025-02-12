@@ -14,6 +14,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
+import { donateCherryPick } from '@/scripts/donate-cherrypick.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -230,6 +231,12 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-history',
 		to: '/my/follow-requests-history',
 	},
+//	support: {
+//		// title: i18n.tsx.supportThisInstance({ name: instance.name ?? host }),
+//		title: i18n.tsx.supportThisInstance({ name: 'Misskey Miry Remix' }),
+//		icon: 'ti ti-pig-money',
+//		action: (ev) => donateCherryPick(ev),
+//	},
 	cacheClear: {
 		title: i18n.ts.clearCache,
 		icon: 'ti ti-trash',

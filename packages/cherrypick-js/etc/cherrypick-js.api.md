@@ -1767,6 +1767,13 @@ declare namespace entities {
         NotesCreateRequest,
         NotesCreateResponse,
         NotesDeleteRequest,
+        NotesDraftsRequest,
+        NotesDraftsResponse,
+        NotesDraftsCreateRequest,
+        NotesDraftsCreateResponse,
+        NotesDraftsDeleteRequest,
+        NotesDraftsUpdateRequest,
+        NotesDraftsUpdateResponse,
         NotesEventsSearchRequest,
         NotesEventsSearchResponse,
         NotesFavoritesCreateRequest,
@@ -1959,6 +1966,7 @@ declare namespace entities {
         App,
         MessagingMessage,
         Note,
+        NoteDraft,
         NoteReaction,
         NoteFavorite,
         Notification_2 as Notification,
@@ -2854,6 +2862,9 @@ declare namespace note {
 export { note }
 
 // @public (undocumented)
+type NoteDraft = components['schemas']['NoteDraft'];
+
+// @public (undocumented)
 type NoteFavorite = components['schemas']['NoteFavorite'];
 
 // @public (undocumented)
@@ -2891,6 +2902,27 @@ type NotesCreateResponse = operations['notes___create']['responses']['200']['con
 
 // @public (undocumented)
 type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCreateRequest = operations['notes___drafts___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCreateResponse = operations['notes___drafts___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsDeleteRequest = operations['notes___drafts___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsRequest = operations['notes___drafts']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsResponse = operations['notes___drafts']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsUpdateRequest = operations['notes___drafts___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsUpdateResponse = operations['notes___drafts___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesEventsSearchRequest = operations['notes___events___search']['requestBody']['content']['application/json'];

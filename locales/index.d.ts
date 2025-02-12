@@ -14,6 +14,30 @@ export interface Locale extends ILocale {
      */
     "_lang_": string;
     /**
+     * すべてのリノートの省略
+     */
+    "forceCollapseAllRenotes": string;
+    /**
+     * 私または相手がリノートしたすべてのノートをたたんで表示します。
+     */
+    "forceCollapseAllRenotesDescription": string;
+    /**
+     * robots.txtの上書き
+     */
+    "overrideRobotsTxt": string;
+    /**
+     * robots.txtの内容を上書きします。最大2048文字です。
+     */
+    "overrideRobotsTxtDescription": string;
+    /**
+     * アイコンの形設定の連合
+     */
+    "setFederationAvatarShape": string;
+    /**
+     * この設定をオンにすると、自分のアイコンの形(円形、四角形)をローカルユーザ及び遠隔ユーザに連合させることができ、対応するサーバのユーザは、機能を使用している場合は、そのユーザが指定したアイコンの形に見えるようになります。 オフにすると、すべてのユーザーが私が設定したアイコンの形に見えます。
+     */
+    "setFederationAvatarShapeDescription": string;
+    /**
      * キーボードショートカット
      */
     "keyboardShortcuts": string;
@@ -66,6 +90,10 @@ export interface Locale extends ILocale {
      */
     "schedulePostList": string;
     /**
+     * {n}個の投稿が予約されたノートがあります。
+     */
+    "thereIsSchedulePost": ParameterizedString<"n">;
+    /**
      * 一定時間が経過した後に接続したときに歓迎メッセージを表示
      */
     "welcomeBackToast": string;
@@ -96,14 +124,14 @@ export interface Locale extends ILocale {
      */
     "useAutoTranslateDescription": string;
     /**
-     * サーバー管理者が自動翻訳を使用できないように設定しました。
-     * 自動翻訳を使用するには、サーバー管理者にお問い合わせください。
+     * サーバー管理者が{name}を使用できないように設定しました。
+     * {name}を使用するには、サーバー管理者にお問い合わせください。
      */
-    "cantUseAutoTranslateDescription": string;
+    "cantUseThisFunctionDescription": ParameterizedString<"name" | "name">;
     /**
-     * 有効にすると、再利用できるときに自動翻訳を適用します。
+     * 有効にすると、再利用できるときに{name}を適用します。
      */
-    "cantUseAutoTranslateCaption": string;
+    "cantUseThisFunctionCaption": ParameterizedString<"name">;
     /**
      * ウィジェット
      */
@@ -290,6 +318,14 @@ export interface Locale extends ILocale {
      * ノートを編集しました。
      */
     "noteEdited": string;
+    /**
+     * ノートの保存しました。
+     */
+    "noteDrafted": string;
+    /**
+     * ノートの投稿を予約しました。
+     */
+    "createSchedulePost": string;
     /**
      * モーダル背景色を削除
      */
@@ -625,6 +661,10 @@ export interface Locale extends ILocale {
      * 保存
      */
     "save": string;
+    /**
+     * 保存しない
+     */
+    "dontSave": string;
     /**
      * ユーザー
      */
@@ -4807,7 +4847,7 @@ export interface Locale extends ILocale {
      */
     "invalidParamError": string;
     /**
-     * リクエストパラメータに問題があります。通常これはバグですが、入力した文字数が多すぎる等の可能性もあります。
+     * リクエストパラメータに問題があります。通常これはバグですが、入力した文字数が多すぎる・許可されていない文字を入力している等の可能性もあります。
      */
     "invalidParamErrorDescription": string;
     /**
@@ -5543,6 +5583,14 @@ export interface Locale extends ILocale {
      */
     "feedbackUrl": string;
     /**
+     * お問い合わせ
+     */
+    "support": string;
+    /**
+     * {name}を支援
+     */
+    "supportThisInstance": ParameterizedString<"name">;
+    /**
      * 運営者情報
      */
     "impressum": string;
@@ -5894,6 +5942,10 @@ export interface Locale extends ILocale {
      * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
      */
     "federationDisabled": string;
+    /**
+     * 下書き
+     */
+    "draft": string;
     /**
      * 未読の通知の数を表示する
      */
@@ -8178,6 +8230,14 @@ export interface Locale extends ILocale {
              * フォロー/フォロリク履歴の閲覧
              */
             "canReadFollowHistory": string;
+            /**
+             * サーバーサイドのノートの下書きの作成可能数
+             */
+            "noteDraftLimit": string;
+            /**
+             * アイコンの形設定の連合を許可
+             */
+            "canSetFederationAvatarShape": string;
         };
         "_condition": {
             /**
@@ -9393,6 +9453,10 @@ export interface Locale extends ILocale {
          * ノート(自分)
          */
         "noteMy": string;
+        /**
+         * 予約投稿
+         */
+        "noteSchedulePost": string;
         /**
          * ノートを編集
          */
@@ -10739,18 +10803,6 @@ export interface Locale extends ILocale {
          * ソースを表示中
          */
         "readPage": string;
-        /**
-         * ページを作成しました
-         */
-        "created": string;
-        /**
-         * ページを更新しました
-         */
-        "updated": string;
-        /**
-         * ページを削除しました
-         */
-        "deleted": string;
         /**
          * ページ設定
          */
@@ -12470,9 +12522,13 @@ export interface Locale extends ILocale {
          */
         "description2": string;
         /**
-         * 詳しくはこちらをご確認ください。 {link}
+         * 貼り付けようとする項目が何なのか正確に理解しているのであれば、私たちと一緒にCherryPickを開発するのはいかがでしょうか？ {link}
          */
         "description3": ParameterizedString<"link">;
+        /**
+         * 詳しくはこちらをご確認ください。 {link}
+         */
+        "description4": ParameterizedString<"link">;
     };
     "_followRequest": {
         /**
@@ -12585,6 +12641,44 @@ export interface Locale extends ILocale {
                 "text": string;
             };
         };
+    };
+    "_drafts": {
+        /**
+         * 下書きを選択
+         */
+        "select": string;
+        /**
+         * サーバーに下書きを保存しますか？
+         */
+        "saveConfirm": string;
+        /**
+         * ここで「保存しない」を選択しても、下書きは端末内に保存されます。
+         */
+        "saveConfirmDescription": string;
+        /**
+         * 下書きを削除
+         */
+        "delete": string;
+        /**
+         * 下書きを削除しますか？
+         */
+        "deleteAreYouSure": string;
+        /**
+         * 下書きはありません。
+         */
+        "noDrafts": string;
+        /**
+         * {user}への返信
+         */
+        "replyTo": ParameterizedString<"user">;
+        /**
+         * {user}のノートへの引用
+         */
+        "quoteOf": ParameterizedString<"user">;
+        /**
+         * {channel}への投稿
+         */
+        "postTo": ParameterizedString<"channel">;
     };
     "_abuse": {
         "_resolver": {
