@@ -41,19 +41,7 @@ export class UtilityService {
 	@bindThis
 	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
 		if (host == null) return false;
-		const lowerHost = host.toLowerCase();
-		return blockedHosts.some(x => {
-			const lowerBlockedHost = x.toLowerCase();
-			if (lowerBlockedHost.startsWith('*.')) {
-				const domain = lowerBlockedHost.slice(2);
-				return lowerHost.endsWith(`.${domain}`) || lowerHost === domain;
-			}
-			if (lowerBlockedHost.includes('*')) {
-				const regex = new RE2(`^${lowerBlockedHost.replace(/\*/g, '.*')}$`);
-				return regex.test(lowerHost);
-			}
-			return lowerHost === lowerBlockedHost || `.${lowerHost}`.endsWith(`.${lowerBlockedHost}`);
-		});
+		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
 	}
 
 	@bindThis

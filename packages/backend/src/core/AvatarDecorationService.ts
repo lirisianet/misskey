@@ -125,7 +125,6 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 	public async remoteUserUpdate(user: MiUser) {
 		const userHost = user.host ?? '';
 		const instance = await this.instancesRepository.findOneBy({ host: userHost });
-
 		const userHostUrl = `https://${user.host}`;
 		const showUserApiUrl = `${userHostUrl}/api/users/show`;
 
@@ -155,18 +154,9 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 			body: JSON.stringify({}),
 		});
 
-		if (!allRes.ok) {
-			return; // 処理を中止
-		}
-
 		const allDecorations: any = await allRes.json();
 		const updates = {} as Partial<MiUser>;
 		updates.avatarDecorations = [];
-
-		const existingDecorations = await this.avatarDecorationsRepository.findBy({ host: userHost });
-		const existingMap = new Map(
-			existingDecorations.map(d => [d.remoteId, d])
-		);
 
 		for (const avatarDecoration of userAvatarDecorations) {
 			let name;
@@ -182,7 +172,10 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 				}
 			}
 
-			const existingDecoration = existingMap.get(avatarDecorationId);
+			const existingDecoration = await this.avatarDecorationsRepository.findOneBy({
+				host: userHost,
+				remoteId: avatarDecorationId,
+			});
 
 			const decorationData = {
 				name: name,
