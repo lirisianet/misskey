@@ -7,6 +7,7 @@ import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import * as Redis from 'ioredis';
 import * as Sentry from '@sentry/node';
+import { cpus } from 'os';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
@@ -166,6 +167,10 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			};
 		}
 
+		const deliverJobConcurrency = config.deliverJobConcurrency || ((cpus().length || 4) * 8);
+		const inboxJobConcurrency = config.inboxJobConcurrency || ((cpus().length || 4) * 1);
+		const relationshipJobConcurrency = this.config.relationshipJobConcurrency || ((cpus().length || 4) * 4);
+
 		//#region system
 		{
 			const processer = (job: Bull.Job) => {
@@ -282,7 +287,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			}, {
 				...baseQueueOptions(this.config, QUEUE.DELIVER, this.redisForJobQueue),
 				autorun: false,
-				concurrency: this.config.deliverJobConcurrency ?? 128,
+				concurrency: deliverJobConcurrency,
 				limiter: {
 					max: this.config.deliverJobPerSec ?? 128,
 					duration: 1000,
@@ -322,7 +327,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			}, {
 				...baseQueueOptions(this.config, QUEUE.INBOX, this.redisForJobQueue),
 				autorun: false,
-				concurrency: this.config.inboxJobConcurrency ?? 16,
+				concurrency: inboxJobConcurrency,
 				limiter: {
 					max: this.config.inboxJobPerSec ?? 32,
 					duration: 1000,
@@ -452,7 +457,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			}, {
 				...baseQueueOptions(this.config, QUEUE.RELATIONSHIP, this.redisForJobQueue),
 				autorun: false,
-				concurrency: this.config.relationshipJobConcurrency ?? 16,
+				concurrency: relationshipJobConcurrency,
 				limiter: {
 					max: this.config.relationshipJobPerSec ?? 64,
 					duration: 1000,
