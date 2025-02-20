@@ -330,6 +330,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canAutoFollowBack, 'canAutoFollowBack'])">
+						<template #label>{{ i18n.ts._role._options.canAutoFollowBack }}<span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
+						<template #suffix>{{ policies.canAutoFollowBack ? i18n.ts.yes : i18n.ts.no }}</template>
+						<MkSwitch v-model="policies.canAutoFollowBack">
+							<template #label>{{ i18n.ts.enable }}</template>
+						</MkSwitch>
+					</MkFolder>
 					</div>
 				</MkFolder>
 				<div class="_gaps_s">

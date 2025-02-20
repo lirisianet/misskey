@@ -3,7 +3,7 @@
 services:
   redis:
     restart: always
-    image: redis:7-alpine
+    image: valkey/valkey:7-alpine
     ports:
       - "6379:6379"
     volumes:
@@ -13,15 +13,19 @@ services:
       interval: 5s
       retries: 20
 
-  db:
+  postgres:
     restart: always
-    image: postgres:15-alpine
+    image: groonga/pgroonga:latest-alpine-17
     ports:
       - "5432:5432"
+    # environment:
+    #   POSTGRES_USER: USER_HERE
+    #   POSTGRES_PASSWORD: PASSWORD_HERE
+    #   POSTGRES_DB: DB_HERE
     env_file:
       - .config/docker.env
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - ./postgres:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s

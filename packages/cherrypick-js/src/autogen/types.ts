@@ -4291,6 +4291,7 @@ export type components = {
       autoSensitive: boolean;
       carefulBot: boolean;
       autoAcceptFollowed: boolean;
+      autoFollowBack: boolean;
       noCrawle: boolean;
       preventAiLearning: boolean;
       isExplorable: boolean;
@@ -5499,6 +5500,7 @@ export type components = {
       scheduleNoteMax: number;
       canReadFollowHistory: boolean;
       canSetFederationAvatarShape: boolean;
+      canAutoFollowBack: boolean;
     };
     ReversiGameLite: {
       /** Format: id */
@@ -9368,6 +9370,15 @@ export type operations = {
             forciblyFollowedUsers: string[];
             allowedAvatarDecorationHosts: string[];
             customRobotsTxt: string | null;
+            enableCpuModel: boolean;
+            customCpuModel: string | null;
+            enableCpuCore: boolean;
+            customCpuCore: number | null;
+            enableMemTotal: boolean;
+            customMemTotal: number | null;
+            enableFsTotal: boolean;
+            customFsTotal: number | null;
+            validateMinimumUsernameLength: number;
           };
         };
       };
@@ -11831,6 +11842,7 @@ export type operations = {
           perUserListTimelineCacheMax?: number;
           enableReactionsBuffering?: boolean;
           notesPerOneAd?: number;
+          validateMinimumUsernameLength?: number;
           silencedHosts?: string[] | null;
           mediaSilencedHosts?: string[] | null;
           /** @description [Deprecated] Use "urlPreviewSummaryProxyUrl" instead. */
@@ -11859,6 +11871,14 @@ export type operations = {
           bubbleInstances?: string[];
           allowedAvatarDecorationHosts?: string[];
           customRobotsTxt?: string | null;
+          enableCpuModel?: boolean;
+          customCpuModel?: string | null;
+          enableCpuCore?: boolean;
+          customCpuCore?: number | null;
+          enableMemTotal?: boolean;
+          customMemTotal?: number | null;
+          enableFsTotal?: boolean;
+          customFsTotal?: number | null;
         };
       };
     };
@@ -22517,6 +22537,7 @@ export type operations = {
           publicReactions?: boolean;
           carefulBot?: boolean;
           autoAcceptFollowed?: boolean;
+          autoFollowBack?: boolean;
           noCrawle?: boolean;
           preventAiLearning?: boolean;
           requireSigninToViewContents?: boolean;

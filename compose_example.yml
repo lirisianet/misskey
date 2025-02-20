@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+#    image: ghcr.io/catsmiry/misskey:latest
     restart: always
     links:
       - db

@@ -117,6 +117,7 @@ export const ROLE_POLICIES = [
 	'canReadFollowHistory',
 	'noteDraftLimit',
 	'canSetFederationAvatarShape',
+	'canAutoFollowBack',
 ] as const;
 
 // なんか動かない

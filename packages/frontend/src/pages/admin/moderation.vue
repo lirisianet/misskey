@@ -36,6 +36,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
 					</MkSwitch>
 
+					<div class="_gaps">
+						<MkInput v-model="validateMinimumUsernameLength" type="number" @update:modelValue="onUsernameMinLengthChange">
+							<template #label>
+								<span>{{ i18n.ts.validateMinimumUsernameLength }}</span>
+								<span v-if="validateMinimumUsernameLengthChanged" class="_modified">{{ i18n.ts.modified }}</span>
+								<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+							</template>
+							<template #caption>{{ i18n.ts.validateMinimumUsernameLengthDescription }}</template>
+						</MkInput>
+						<MkButton v-if="validateMinimumUsernameLengthChanged" primary @click="save_validateMinimumUsernameLength">{{ i18n.ts.save }}</MkButton>
+					</div>
+
 					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
 					<MkFolder>
@@ -216,6 +228,7 @@ const disableRegistrationWhenInactive = ref<boolean>(false);
 const disablePublicNoteWhenInactive = ref<boolean>(false);
 const moderatorInactivityLimitDays = ref<number>(7);
 const emailRequiredForSignup = ref<boolean>(false);
+const validateMinimumUsernameLength = ref<number>();
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
 const prohibitedWordsForNameOfUser = ref<string>('');
@@ -231,12 +244,19 @@ const defaultFollowedUsers = ref<string>('');
 const forciblyFollowedUsers = ref<string>('');
 
 // Add defaultFollowedUsers and forciblyFollowedUsers to meta object
+const originalMinimumUsernameLength = ref<number>();
+const validateMinimumUsernameLengthChanged = computed(() =>
+	validateMinimumUsernameLength.value !== originalMinimumUsernameLength.value
+);
+
 async function init() {
 	enableRegistration.value = !meta.disableRegistration;
 	disableRegistrationWhenInactive.value = meta.disableRegistrationWhenInactive;
 	disablePublicNoteWhenInactive.value = meta.disablePublicNoteWhenInactive;
 	moderatorInactivityLimitDays.value = meta.moderatorInactivityLimitDays;
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
+	validateMinimumUsernameLength.value = meta.validateMinimumUsernameLength;
+	originalMinimumUsernameLength.value = meta.validateMinimumUsernameLength;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
 	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
@@ -320,6 +340,19 @@ function onChange_emailRequiredForSignup(value: boolean) {
 		emailRequiredForSignup: value,
 	}).then(() => {
 		fetchInstance(true);
+	});
+}
+
+function onUsernameMinLengthChange(value: number) {
+	validateMinimumUsernameLength.value = value;
+}
+
+function save_validateMinimumUsernameLength() {
+	os.apiWithDialog('admin/update-meta', {
+		validateMinimumUsernameLength: validateMinimumUsernameLength.value,
+	}).then(() => {
+		fetchInstance(true);
+		originalMinimumUsernameLength.value = validateMinimumUsernameLength.value;
 	});
 }
 

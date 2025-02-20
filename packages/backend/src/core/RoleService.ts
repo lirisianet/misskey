@@ -72,6 +72,7 @@ export type RolePolicies = {
 	canReadFollowHistory: boolean;
 	noteDraftLimit: number;
 	canSetFederationAvatarShape: boolean;
+	canAutoFollowBack: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -115,6 +116,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canReadFollowHistory: false,
 	noteDraftLimit: 10,
 	canSetFederationAvatarShape: true,
+	canAutoFollowBack: false,
 };
 
 @Injectable()
@@ -431,6 +433,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canReadFollowHistory: calc('canReadFollowHistory', vs => vs.some(v => v === true)),
 			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
 			canSetFederationAvatarShape: calc('canSetFederationAvatarShape', vs => vs.some(v => v === true)),
+			canAutoFollowBack: calc('canAutoFollowBack', vs => vs.some(v => v === true)),
 		};
 	}
 

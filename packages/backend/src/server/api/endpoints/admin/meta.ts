@@ -669,6 +669,42 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableCpuModel: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			customCpuModel: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableCpuCore: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			customCpuCore: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			enableMemTotal: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			customMemTotal: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			enableFsTotal: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			customFsTotal: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			validateMinimumUsernameLength: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -850,6 +886,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				defaultFollowedUsers: instance.defaultFollowedUsers,
 				forciblyFollowedUsers: instance.forciblyFollowedUsers,
 				customRobotsTxt: instance.customRobotsTxt,
+				enableCpuModel: instance.enableCpuModel,
+				customCpuModel: instance.customCpuModel,
+				enableCpuCore: instance.enableCpuCore,
+				customCpuCore: instance.customCpuCore,
+				enableMemTotal: instance.enableMemTotal,
+				customMemTotal: instance.customMemTotal,
+				enableFsTotal: instance.enableFsTotal,
+				customFsTotal: instance.customFsTotal,
+				validateMinimumUsernameLength: instance.validateMinimumUsernameLength,
 			};
 		});
 	}

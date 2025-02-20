@@ -13,6 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
 	</MkSwitch>
 
+	<MkSwitch v-if="$i.policies.canAutoFollowBack" v-model="autoFollowBack" @update:modelValue="save()">
+		{{ i18n.ts.autoFollowBack }}<span class="_beta">{{ i18n.ts._cherrypick.function }}</span>
+		<template #caption>{{ i18n.ts.autoFollowBackDescription }}</template>
+	</MkSwitch>
+
 	<MkSelect v-model="followingVisibility" @update:modelValue="save()">
 		<template #label>{{ i18n.ts.followingVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
@@ -179,6 +184,8 @@ const $i = signinRequired();
 
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);
+const autoFollowBack = ref($i.autoFollowBack);
+const carefulBot = ref($i.carefulBot);
 const noCrawle = ref($i.noCrawle);
 const preventAiLearning = ref($i.preventAiLearning);
 const isExplorable = ref($i.isExplorable);
@@ -236,6 +243,8 @@ function save() {
 	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
 		autoAcceptFollowed: !!autoAcceptFollowed.value,
+		autoFollowBack: !!autoFollowBack.value,
+		carefulBot: !!carefulBot.value,
 		noCrawle: !!noCrawle.value,
 		preventAiLearning: !!preventAiLearning.value,
 		isExplorable: !!isExplorable.value,
