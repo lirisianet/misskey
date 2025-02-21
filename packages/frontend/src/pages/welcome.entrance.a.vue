@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="shape2"></div>
 	<div class="logo-wrapper">
 		<div class="powered-by">Powered by</div>
-		<img :src="misskeysvg" class="misskey"/>
+		<img :src="misskeymiryremixsvg" class="misskey"/>
 	</div>
 	<div class="emojis">
 		<MkEmoji :normal="true" :noStyle="true" emoji="👍"/>
@@ -43,6 +43,7 @@ import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import cherrypicksvg from '/client-assets/cherrypick.svg';
 import misskeysvg from '/client-assets/misskey.svg';
+import misskeymiryremixsvg from '/client-assets/misskeymiryremix.svg';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
@@ -61,7 +62,7 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 misskeyApiGet('federation/instances', {
 	sort: '+pubSub',
 	limit: 20,
-	blocked: 'false',
+	blocked: false,
 }).then(_instances => {
 	instances.value = _instances;
 });

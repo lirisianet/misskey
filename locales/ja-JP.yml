@@ -2706,6 +2706,7 @@ _widgets:
   addTodo: "ToDoを追加"
   todo: "ToDoリスト"
   complete: "完了"
+  listenbrainz: "ListenBrainz"
 
 _cw:
   hide: "隠す"

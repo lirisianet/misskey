@@ -26,7 +26,7 @@ services:
 
   redis:
     restart: always
-    image: redis:7-alpine
+    image: valkey/valkey:7-alpine
     networks:
       - internal_network
     volumes:
@@ -38,11 +38,15 @@ services:
 
   db:
     restart: always
-    image: postgres:15-alpine
+    image: groonga/pgroonga:latest-alpine-17
     networks:
       - internal_network
     env_file:
       - .config/docker.env
+    # environment:
+    #   POSTGRES_USER: USER_HERE
+    #   POSTGRES_PASSWORD: PASSWORD_HERE
+    #   POSTGRES_DB: DB_HERE
     volumes:
       - ./db:/var/lib/postgresql/data
     healthcheck:

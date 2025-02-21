@@ -10327,6 +10327,10 @@ export interface Locale extends ILocale {
          * 完了
          */
         "complete": string;
+        /**
+         * ListenBrainz
+         */
+        "listenbrainz": string;
     };
     "_cw": {
         /**
