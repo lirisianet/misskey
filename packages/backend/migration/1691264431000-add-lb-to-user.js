@@ -1,10 +1,5 @@
-/*
- * SPDX-FileCopyrightText: noridev and cherrypick-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-export class AddListenBrainz1740137797464 {
-	name = "AddListenBrainz1740137797464";
+export class AddLbToUser1691264431000 {
+	name = "AddLbToUser1691264431000";
 
 	async up(queryRunner) {
 		await queryRunner.query(`

@@ -115,7 +115,7 @@ export class SignupApiService {
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
 
-		if (this.meta.emailRequiredForSignup) {
+		if (this.meta.emailRequiredForSignup && !invitationCode) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
 				reply.code(400);
 				return;
@@ -167,9 +167,29 @@ export class SignupApiService {
 				reply.code(400);
 				return;
 			}
+		} else if (invitationCode) {
+			ticket = await this.registrationTicketsRepository.findOneBy({
+				code: invitationCode,
+			});
+
+			if (ticket == null || ticket.usedById != null) {
+				reply.code(400);
+				return;
+			}
+
+			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
+				reply.code(400);
+				return;
+			}
+
+			// メアド認証が有効の場合
+			if (this.meta.emailRequiredForSignup && !emailAddress && !invitationCode) {
+				reply.code(400);
+				return;
+			}
 		}
 
-		if (this.meta.emailRequiredForSignup) {
+		if (this.meta.emailRequiredForSignup && (!invitationCode || invitationCode === '')) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
@@ -213,7 +233,7 @@ export class SignupApiService {
 
 			reply.code(204);
 			return;
-		} else {
+		} else if (ticket) {
 			try {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
@@ -224,13 +244,29 @@ export class SignupApiService {
 					includeSecrets: true,
 				});
 
-				if (ticket) {
-					await this.registrationTicketsRepository.update(ticket.id, {
-						usedAt: new Date(),
-						usedBy: account,
-						usedById: account.id,
-					});
-				}
+				await this.registrationTicketsRepository.update(ticket.id, {
+					usedAt: new Date(),
+					usedBy: account,
+					usedById: account.id,
+				});
+
+				return {
+					...res,
+					token: secret,
+				};
+			} catch (err) {
+				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
+			}
+		} else {
+			try {
+				const { account, secret } = await this.signupService.signup({
+					username, password, host,
+				});
+
+				const res = await this.userEntityService.pack(account, account, {
+					schema: 'MeDetailed',
+					includeSecrets: true,
+				});
 
 				return {
 					...res,

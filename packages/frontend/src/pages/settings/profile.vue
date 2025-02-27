@@ -39,12 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #prefix><i class="ti ti-cake"></i></template>
 		</MkInput>
 
-		<MkInput v-model="profile.listenbrainz" manualSave>
-		<template #label>ListenBrainz<span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
+	<MkInput v-model="profile.listenbrainz" manualSave>
+		<template #label>{{ i18n.ts._profile.listenbrainz }}<span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
 		<template #prefix><i class="ti ti-headphones"></i></template>
-	  </MkInput>
+	</MkInput>
 
-		<MkSelect v-model="profile.lang">
+	<MkSelect v-model="profile.lang">
 			<template #label>{{ i18n.ts.language }}</template>
 			<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
 		</MkSelect>

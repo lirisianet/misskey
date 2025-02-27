@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<MkSpacer :marginMin="20" :marginMax="32">
 		<form class="_gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
-			<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
+			<MkInput v-if="instance.disableRegistration || instance.emailRequiredForSignup" v-model="invitationCode" type="text" :spellcheck="false" :required="isInvitationCodeRequired">
 				<template #label>{{ i18n.ts.invitationCode }}</template>
 				<template #prefix><i class="ti ti-key"></i></template>
 			</MkInput>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="usernameState === 'max-range'" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 				</template>
 			</MkInput>
-			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" :required="isEmailRequired" data-cy-signup-email @update:modelValue="onChangeEmail">
 				<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 				<template #prefix><i class="ti ti-mail"></i></template>
 				<template #caption>
@@ -135,14 +135,22 @@ const emailAbortController = ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
-		instance.enableHcaptcha && !hCaptchaResponse.value ||
-		instance.enableMcaptcha && !mCaptchaResponse.value ||
-		instance.enableRecaptcha && !reCaptchaResponse.value ||
-		instance.enableTurnstile && !turnstileResponse.value ||
-		instance.enableTestcaptcha && !testcaptchaResponse.value ||
-		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
+		(instance.enableHcaptcha && !hCaptchaResponse.value) ||
+		(instance.enableMcaptcha && !mCaptchaResponse.value) ||
+		(instance.enableRecaptcha && !reCaptchaResponse.value) ||
+		(instance.enableTurnstile && !turnstileResponse.value) ||
+		(instance.enableTestcaptcha && !testcaptchaResponse.value) ||
+		(instance.emailRequiredForSignup && !invitationCode.value && emailState.value !== 'ok') ||
 		usernameState.value !== 'ok' ||
 		passwordRetypeState.value !== 'match';
+});
+
+const isEmailRequired = computed((): boolean => {
+	return instance.emailRequiredForSignup && (!invitationCode.value || invitationCode.value === '');
+});
+
+const isInvitationCodeRequired = computed((): boolean => {
+	return instance.disableRegistration || (instance.emailRequiredForSignup && !email.value);
 });
 
 function getPasswordStrength(source: string): number {
@@ -293,7 +301,7 @@ async function onSubmit(): Promise<void> {
 	});
 
 	if (res && res.ok) {
-		if (res.status === 204 || instance.emailRequiredForSignup) {
+		if (res.status === 204 || (instance.emailRequiredForSignup && !invitationCode.value)) {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,

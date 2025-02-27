@@ -231,7 +231,7 @@ function toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailed
 		description: null,
 		location: null,
 		birthday: null,
-		listenbrainz: null,
+		ListenBrainz: null,
 		lang: null,
 		fields: [],
 		verifiedLinks: [],

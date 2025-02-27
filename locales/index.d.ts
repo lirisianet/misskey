@@ -10330,7 +10330,7 @@ export interface Locale extends ILocale {
         /**
          * ListenBrainz
          */
-        "listenbrainz": string;
+        "listenBrainz": string;
     };
     "_cw": {
         /**
@@ -10587,6 +10587,10 @@ export interface Locale extends ILocale {
          * フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。
          */
         "followedMessageDescriptionForLockedAccount": string;
+        /**
+         * ListenBrainz username
+         */
+        "listenbrainz": string;
     };
     "_exportOrImport": {
         /**

@@ -76,6 +76,7 @@ export const widgets = [
 	'search',
 	'dice',
 	'todo',
+	'listenBrainz',
 
 	...federationWidgets,
 ];

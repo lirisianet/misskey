@@ -16,8 +16,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import {
-	birthdaySchema,
-	listenbrainzSchema,
+	birthdaySchema, listenbrainzSchema,
 	descriptionSchema,
 	localUsernameSchema,
 	locationSchema,

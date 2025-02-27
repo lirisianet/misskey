@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: Miry(@catsmiry) and lqvp
+SPDX-FileCopyrightText: lqvp
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 

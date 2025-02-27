@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Miry(@catsmiry)
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-todo class="mkw-todo">
 	<template #icon><i class="ti ti-checklist"></i></template>
@@ -7,11 +12,13 @@
 		<ul>
 			<li v-for="(todo, index) in todos" :key="index">
 				{{ todo }}
-				<button @click="completeTask(index)">{{ i18n.ts._widgets.complete }}</button>
+				<MkButton @click="completeTask(index)">{{ i18n.ts._widgets.complete }}</MkButton>
 			</li>
 		</ul>
-		<input v-model="newTodo" :placeholder="i18n.ts._widgets.addNewTodo" />
-		<button @click="addTodo">{{ i18n.ts._widgets.addTodo }}</button>
+		<div class="input-container">
+			<MkInput v-model="newTodo" :placeholder="i18n.ts._widgets.addNewTodo" />
+			<MkButton @click="addTodo">{{ i18n.ts._widgets.addTodo }}</MkButton>
+		</div>
 	</div>
 </MkContainer>
 </template>
@@ -21,7 +28,10 @@ import { ref, onMounted } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 
 const name = 'todo';
 
@@ -39,18 +49,15 @@ const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
 
-const todos = ref<string[]>([]);
+const todos = ref<string[]>(defaultStore.state.todos || []);
 const newTodo = ref<string>('');
 
 const loadTodos = () => {
-	const savedTodos = localStorage.getItem('todos');
-	if (savedTodos) {
-		todos.value = JSON.parse(savedTodos);
-	}
+	todos.value = defaultStore.state.todos || [];
 };
 
 const saveTodos = () => {
-	localStorage.setItem('todos', JSON.stringify(todos.value));
+	defaultStore.set('todos', todos.value);
 };
 
 const addTodo = () => {
@@ -92,39 +99,25 @@ defineExpose<WidgetComponentExpose>({
 			padding: 8px 0;
 			border-bottom: 1px solid var(--MI_THEME-divider);
 
-			button {
-				background: var(--MI_THEME-primary);
-				color: white;
-				border: none;
-				border-radius: 4px;
-				padding: 4px 8px;
-				cursor: pointer;
-
-				&:hover {
-					background: var(--MI_THEME-primary-dark);
-				}
+			.MkButton {
+				margin-left: 8px;
 			}
 		}
 	}
 
-	input {
-		width: calc(100% - 100px);
-		padding: 8px;
-		margin-right: 8px;
-		border: 1px solid var(--MI_THEME-divider);
-		border-radius: 4px;
-	}
+	.input-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 16px;
 
-	button {
-		background: var(--MI_THEME-primary);
-		color: white;
-		border: none;
-		border-radius: 4px;
-		padding: 8px 16px;
-		cursor: pointer;
+		.MkInput {
+			width: 70%;
+			margin-right: 8px;
+		}
 
-		&:hover {
-			background: var(--MI_THEME-primary-dark);
+		.MkButton {
+			padding: 8px 16px;
 		}
 	}
 }
