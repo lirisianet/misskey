@@ -116,7 +116,10 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create $(jq -cr '.tags + ["latest"] | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools rm ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }} || true
+          docker buildx imagetools create \
+            -t ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }} \
+            -t ${{ env.REGISTRY_IMAGE }}:latest \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
       - name: Inspect image
         run: |
