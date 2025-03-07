@@ -63,32 +63,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<FormSection>
 						<template #label>CherryPick</template>
 						<div class="_gaps_s">
-							<FormLink to="https://github.com/catsmiry/misskey" external>
+							<FormLink to="https://github.com/kokonect-link/cherrypick" external>
 								<template #icon><i class="ti ti-code"></i></template>
 								{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
 								<template #suffix>GitHub</template>
 							</FormLink>
-							<!--
-						<FormLink to="https://crowdin.com/project/misskey" external>
-							<template #icon><i class="ti ti-language-hiragana"></i></template>
-							{{ i18n.ts._aboutMisskey.translation }}
-							<template #suffix>Crowdin</template>
-						</FormLink>
-
-						<FormLink to="https://discord.gg/V8qghB28Aj" external>
-							<template #icon><i class="ti ti-brand-discord"></i></template>
-							{{ i18n.ts._aboutMisskey._cherrypick.community }}
-							<template #suffix>Discord</template>
-						</FormLink>
-						
-						<button :class="$style.main" class="_button" @click="donateCherryPick">
-							<span :class="$style.icon"><i class="ti ti-pig-money"></i></span>
-							<span :class="$style.text">{{ i18n.ts._aboutMisskey._cherrypick.donate }}</span>
-							<span :class="$style.suffix">
-								<i class="ti ti-external-link"></i>
-							</span>
-						</button>
-					-->
+						  <FormLink to="https://crowdin.com/project/misskey" external>
+						  	<template #icon><i class="ti ti-language-hiragana"></i></template>
+						  	{{ i18n.ts._aboutMisskey.translation }}
+						  	<template #suffix>Crowdin</template>
+						  </FormLink>
+  
+						  <FormLink to="https://discord.gg/V8qghB28Aj" external>
+						  	<template #icon><i class="ti ti-brand-discord"></i></template>
+						  	{{ i18n.ts._aboutMisskey._cherrypick.community }}
+						  	<template #suffix>Discord</template>
+						  </FormLink>
+						  
+						  <button :class="$style.main" class="_button" @click="donateCherryPick">
+						  	<span :class="$style.icon"><i class="ti ti-pig-money"></i></span>
+						  	<span :class="$style.text">{{ i18n.ts._aboutMisskey._cherrypick.donate }}</span>
+						  	<span :class="$style.suffix">
+						  		<i class="ti ti-external-link"></i>
+						  	</span>
+						  </button>
 						</div>
 					</FormSection>
 					<FormSection>
@@ -133,6 +131,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<FormSection>
 						<template #label>{{ i18n.ts._aboutMisskey.projectMembers }}</template>
 						<div :class="$style.contributors">
+							<a href="https://github.com/catsmiry" target="_blank" :class="$style.contributor">
+								<img src="https://avatars.githubusercontent.com/u/186817830?v=4" :class="$style.contributorAvatar">
+								<span :class="$style.contributorUsername">@noridev
+									<span :class="$style.contributorClient">
+										<span :class="$style.misskey">Misskey Miry Remix</span>
+									</span>
+								</span>
+							</a>
 							<a href="https://github.com/noridev" target="_blank" :class="$style.contributor">
 								<img src="https://avatars.githubusercontent.com/u/11006910?v=4" :class="$style.contributorAvatar">
 								<span :class="$style.contributorUsername">@noridev
@@ -267,9 +273,6 @@ const patronsWithIconWithCherryPick = [{
 }, {
 	name: 'breadguy',
 	icon: 'https://s3.kokonect.link/cherrypick/patreons/04cd46fba69c4953949cd1cc15d8c691.jpg',
-}, {
-	name: 'Evgeni Ku',
-	icon: 'https://s3.kokonect.link/cherrypick/patreons/f8c53a4244844192be76e7cbbb57bb48.jpeg',
 }];
 
 const patronsWithIconWithMisskey = [{

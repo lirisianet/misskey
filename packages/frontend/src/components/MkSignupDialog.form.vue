@@ -88,7 +88,8 @@ import * as Misskey from 'cherrypick-js';
 import * as config from '@@/js/config.js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
-import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
+import type { Captcha } from '@/components/MkCaptcha.vue';
+import MkCaptcha from '@/components/MkCaptcha.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
@@ -319,13 +320,16 @@ async function onSubmit(): Promise<void> {
 			}
 		}
 	} else {
-		onSignupApiError();
+		if (res) {
+			const errorResponse = await res.json();
+			onSignupApiError(errorResponse.message);
+		}
 	}
 
 	submitting.value = false;
 }
 
-function onSignupApiError() {
+function onSignupApiError(message?: string) {
 	submitting.value = false;
 	hcaptcha.value?.reset?.();
 	mcaptcha.value?.reset?.();
@@ -333,9 +337,10 @@ function onSignupApiError() {
 	turnstile.value?.reset?.();
 	testcaptcha.value?.reset?.();
 
+	let errorMessage = message ?? i18n.ts.somethingHappened;
 	os.alert({
 		type: 'error',
-		text: i18n.ts.somethingHappened,
+		text: errorMessage,
 	});
 }
 </script>

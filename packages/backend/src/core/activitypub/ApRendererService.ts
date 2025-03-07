@@ -28,6 +28,7 @@ import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFil
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { IdService } from '@/core/IdService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
 import { CONTEXT } from './misc/contexts.js';
@@ -65,6 +66,7 @@ export class ApRendererService {
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
 		private idService: IdService,
+		private utilityService: UtilityService,
 	) {
 	}
 
@@ -627,7 +629,7 @@ export class ApRendererService {
 
 	@bindThis
 	public renderUndo(object: string | IObject, user: { id: MiUser['id'] }): IUndo {
-		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
+		const id = typeof object !== 'string' && typeof object.id === 'string' && this.utilityService.isUriLocal(object.id) ? `${object.id}/undo` : undefined;
 
 		return {
 			type: 'Undo',
@@ -797,11 +799,11 @@ export class ApRendererService {
 	public async renderReversiUpdate(local_user:MiUser, remote_user:MiRemoteUser,
 		game_state: {
 			game_session_id: string;
-			type:string;
-			pos?:number;//石配置
-			key?:string;//設定変更
-			value?:any;//設定変更
-			ready?:boolean;//ゲーム開始
+			type: string;
+			pos?: number; //石配置
+			key?: string; //設定変更
+			value?: any; //設定変更
+			ready?: boolean; //ゲーム開始
 		},
 	) {
 		const game:IApReversi = {

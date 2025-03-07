@@ -793,6 +793,12 @@ export class MiMeta {
 	})
 	public federationHosts: string[];
 
+	@Column('varchar', {
+		length: 64,
+		nullable: true,
+	})
+	public googleAnalyticsMeasurementId: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})
@@ -922,4 +928,9 @@ export class MiMeta {
 		default: 5,
 	})
 	public validateMinimumUsernameLength: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableIpCheck: boolean;
 }

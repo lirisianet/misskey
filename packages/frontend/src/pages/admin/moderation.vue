@@ -36,6 +36,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
 					</MkSwitch>
 
+					<MkSwitch v-model="enableIpCheck" @change="onChange_enableIpCheck">
+						<template #label>{{ i18n.ts.IpCheckForSignup }}<span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
+					</MkSwitch>
+
 					<div class="_gaps">
 						<MkInput v-model="validateMinimumUsernameLength" type="number" @update:modelValue="onUsernameMinLengthChange">
 							<template #label>
@@ -242,11 +246,12 @@ const bubbleTimeline = ref<string>('');
 const allowedAvatarDecorationHosts = ref<string>('');
 const defaultFollowedUsers = ref<string>('');
 const forciblyFollowedUsers = ref<string>('');
+const enableIpCheck = ref<boolean>(false);
 
 // Add defaultFollowedUsers and forciblyFollowedUsers to meta object
 const originalMinimumUsernameLength = ref<number>();
 const validateMinimumUsernameLengthChanged = computed(() =>
-	validateMinimumUsernameLength.value !== originalMinimumUsernameLength.value
+	validateMinimumUsernameLength.value !== originalMinimumUsernameLength.value,
 );
 
 async function init() {
@@ -270,6 +275,7 @@ async function init() {
 	allowedAvatarDecorationHosts.value = meta.allowedAvatarDecorationHosts.join('\n');
 	defaultFollowedUsers.value = meta.defaultFollowedUsers.join('\n');
 	forciblyFollowedUsers.value = meta.forciblyFollowedUsers.join('\n');
+	enableIpCheck.value = meta.enableIpCheck;
 }
 
 async function onChange_enableRegistration(value: boolean) {
@@ -302,7 +308,7 @@ function save_defaultUsers() {
 	os.apiWithDialog('admin/update-meta', payload, undefined, {
 		'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d': {
 			text: i18n.ts.defaultFollowedUsersDuplicated,
-		}
+		},
 	}).then(() => {
 		fetchInstance(true);
 	});
@@ -338,6 +344,14 @@ async function onChange_moderatorInactivityLimitDays() {
 function onChange_emailRequiredForSignup(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		emailRequiredForSignup: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableIpCheck(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableIpCheck: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

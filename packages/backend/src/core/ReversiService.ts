@@ -111,7 +111,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async remoteVersion(host:string): Promise<string | null> {
+	public async remoteVersion(host: string): Promise<string | null> {
 		const cache = await this.redisClient.get(`reversi:federation:version:${host}`);
 		if (cache !== null) {
 			return cache.length === 0 ? null : cache;
@@ -122,7 +122,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		}
 		const nodeinfo = await this.fetchInstanceMetadataService.fetchNodeinfo(instance);
 		const reversiVersion = nodeinfo.metadata?.reversiVersion;
-		if (typeof(reversiVersion) === 'string') {
+		if (typeof (reversiVersion) === 'string') {
 			//0.0.0-foo => 0.0.0
 			const version = reversiVersion.split('-')[0];
 			await this.redisClient.setex(`reversi:federation:version:${host}`, 5 * 60, version);
@@ -132,7 +132,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		return null;
 	}
 	@bindThis
-	public async federationAvailable(host:string): Promise<boolean | null> {
+	public async federationAvailable(host: string): Promise<boolean | null> {
 		const version = await this.remoteVersion(host);
 		if (version === null) {
 			//初期の実装はバージョンを返さない
@@ -178,7 +178,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		for (const invite of invitations) {
 			if (invite.from_user_id === targetUser.id) {
-				const game_session_id:string|undefined = invite.game_session_id;
+				const game_session_id: string | undefined = invite.game_session_id;
 				this.logger.info('ゲーム開始 共通セッションid=' + game_session_id);
 				await this.redisClient.zrem(`reversi:matchSpecific:${me.id}`, JSON.stringify(invite));
 
@@ -220,7 +220,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			if (targetUser.uri === null) {
 				throw new Error('WIP');
 			}
-			const remote_user : MiRemoteUser = targetUser as MiRemoteUser;
+			const remote_user: MiRemoteUser = targetUser as MiRemoteUser;
 			const game_session_id = randomUUID().toString();
 			const invite = await this.apRendererService.renderReversiInvite(game_session_id, me, remote_user, new Date());
 			const content = this.apRendererService.addContext(invite);
@@ -331,7 +331,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async matchSpecificUserCancel(user: MiUser, targetUser: MiUser, game_session_id:string|undefined = undefined) {
+	public async matchSpecificUserCancel(user: MiUser, targetUser: MiUser, game_session_id: string | undefined = undefined) {
 		await this.redisClient.zrem(`reversi:matchSpecific:${targetUser.id}`, JSON.stringify({
 			from_user_id: user.id,
 			game_session_id,
@@ -418,7 +418,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean;}, federationId:string|null = null): Promise<MiReversiGame> {
+	private async matched(parentId: MiUser['id'], childId: MiUser['id'], options: { noIrregularRules: boolean; }, federationId: string | null = null): Promise<MiReversiGame> {
 		const game = await this.reversiGamesRepository.insertOne({
 			id: this.idService.gen(),
 			user1Id: parentId,

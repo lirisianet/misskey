@@ -239,7 +239,7 @@ export interface ReversiGameEventTypes {
 type Events<T extends object> = { [K in keyof T]: { type: K; body: T[K]; } };
 type EventUnionFromDictionary<
 	T extends object,
-	U = Events<T>
+	U = Events<T>,
 > = U[keyof U];
 
 type SerializedAll<T> = {
@@ -248,12 +248,12 @@ type SerializedAll<T> = {
 
 type UndefinedAsNullAll<T> = {
 	[K in keyof T]: T[K] extends undefined ? null : T[K];
-}
+};
 
 export interface InternalEventTypes {
 	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; };
 	userChangeDeletedState: { id: MiUser['id']; isDeleted: MiUser['isDeleted']; };
-	userChangeRootState: { id: MiUser['id']; isRoot: MiUser['isRoot']};
+	userChangeRootState: { id: MiUser['id']; isRoot: MiUser['isRoot'] };
 	userTokenRegenerated: { id: MiUser['id']; oldToken: string; newToken: string; };
 	remoteUserUpdated: { id: MiUser['id']; };
 	localUserUpdated: { id: MiUser['id']; };
