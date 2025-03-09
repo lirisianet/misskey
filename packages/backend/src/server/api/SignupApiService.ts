@@ -79,13 +79,21 @@ export class SignupApiService {
 		// VPN/Proxy チェック
 		if (this.meta.enableIpCheck) {
 			const ip = request.ip;
-			const response = await fetch(`http://ip-api.com/json/${ip}?fields=mobile,proxy,hosting`);
-			const data = await response.json() as { mobile: boolean; proxy: boolean; hosting: boolean };
-			const { mobile, proxy, hosting } = data;
+			const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,mobile,proxy,hosting`);
+			const data = await response.json() as { status: string; mobile: boolean; proxy: boolean; hosting: boolean };
+			const { status, mobile, proxy, hosting } = data;
+
+			if (status !== 'success') {
+				reply.code(400).send({
+					message: 'IPチェックAPIの上限に達しました。数分待ってから登録してください。\nAPI limit reached for IP check. Please wait a few minutes before registering.',
+					error: 'API_LIMIT_REACHED',
+				});
+				return;
+			}
 
 			if (mobile || proxy || hosting) {
 				reply.code(400).send({
-					message: 'VPNサービス/Hostingサービス/モバイル回線を使って本サーバーでは登録することはできません。You cannot register on this server using a VPN service, hosting service, or mobile network.',
+					message: 'VPNサービス/Hostingサービス/モバイル回線を使って本サーバーでは登録することはできません。\nYou cannot register on this server using a VPN service, hosting service, or mobile network.',
 					error: 'VPN_DETECTED',
 				});
 				return;

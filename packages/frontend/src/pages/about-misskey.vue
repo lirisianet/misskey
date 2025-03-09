@@ -4,41 +4,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkStickyContainer>
-		<template #header>
-			<MkPageHeader :actions="headerActions" :tabs="headerTabs" />
-		</template>
-		<div style="overflow: clip;">
-			<MkSpacer :contentMax="600" :marginMin="20">
-				<div class="_gaps_m znqjceqz">
-					<div v-panel class="about">
-						<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
-							<img src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded"
-								@click="gravity" />
-							<div class="misskey">Misskey</div>
-							<div class="version" @click="whatIsNewMisskey">v{{ version }}</div>
-							<div class="version" style="font-size: 11px;" @click="whatIsNewCherryPick">v{{ basedCherryPickVersion }}
-								(Based on CherryPick)</div>
-							<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left"
-								:data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }">
-								<MkCustomEmoji v-if="emoji.emoji[0] === ':'" class="emoji" :name="emoji.emoji" :normal="true"
-									:noStyle="true" :fallbackToImage="true" />
-								<MkEmoji v-else class="emoji" :emoji="emoji.emoji" :normal="true" :noStyle="true" />
-							</span>
+<MkStickyContainer>
+	<template #header>
+		<MkPageHeader :actions="headerActions" :tabs="headerTabs"/>
+	</template>
+	<div style="overflow: clip;">
+		<MkSpacer :contentMax="600" :marginMin="20">
+			<div class="_gaps_m znqjceqz">
+				<div v-panel class="about">
+					<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
+						<img
+							src="/client-assets/about-icon.png" alt="" class="icon" draggable="false" @load="iconLoaded"
+							@click="gravity"
+						/>
+						<div class="misskey">Misskey</div>
+						<div class="version" @click="whatIsNewMisskey">v{{ version }}</div>
+						<div class="version" style="font-size: 11px;" @click="whatIsNewCherryPick">
+							v{{ basedCherryPickVersion }}
+							(Based on CherryPick)
 						</div>
-						<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img
-								src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
+						<span
+							v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left"
+							:data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"
+						>
+							<MkCustomEmoji
+								v-if="emoji.emoji[0] === ':'" class="emoji" :name="emoji.emoji" :normal="true"
+								:noStyle="true" :fallbackToImage="true"
+							/>
+							<MkEmoji v-else class="emoji" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
+						</span>
 					</div>
-					<div style="text-align: center;">
-						{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/about-misskey/" target="_blank"
-							class="_link">{{ i18n.ts.learnMore }}</a>
-					</div>
-					<div v-if="$i != null" style="text-align: center;">
-						<MkButton primary rounded inline @click="iLoveMisskey">I
-							<Mfm text="$[jelly ❤]" /> #Misskey
-						</MkButton>
-					</div>
-					<!--
+					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure">
+						<img
+							src="/fluent-emoji/1f3c6.png" class="treasureImg"
+						>
+					</button>
+				</div>
+				<div style="text-align: center;">
+					{{ i18n.ts._aboutMisskey.about }}<br><a
+						href="https://misskey-hub.net/docs/about-misskey/" target="_blank"
+						class="_link"
+					>{{ i18n.ts.learnMore }}</a>
+				</div>
+				<div v-if="$i != null" style="text-align: center;">
+					<MkButton primary rounded inline @click="iLoveMisskey">
+						I
+						<Mfm text="$[jelly ❤]"/> #Misskey
+					</MkButton>
+				</div>
+				<!--
 				<FormSection v-if="isKokonect">
 					<template #label>_KOKONECT_</template>
 					<div class="_gaps_s">
@@ -50,152 +64,152 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</FormSection>
 			-->
-					<FormSection>
-						<template #label>Misskey Miry Remix</template>
-						<div class="_gaps_s">
-							<FormLink to="https://github.com/catsmiry/misskey" external>
-								<template #icon><i class="ti ti-code"></i></template>
-								{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
-								<template #suffix>GitHub</template>
-							</FormLink>
-						</div>
-					</FormSection>
-					<FormSection>
-						<template #label>CherryPick</template>
-						<div class="_gaps_s">
-							<FormLink to="https://github.com/kokonect-link/cherrypick" external>
-								<template #icon><i class="ti ti-code"></i></template>
-								{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
-								<template #suffix>GitHub</template>
-							</FormLink>
-						  <FormLink to="https://crowdin.com/project/misskey" external>
-						  	<template #icon><i class="ti ti-language-hiragana"></i></template>
-						  	{{ i18n.ts._aboutMisskey.translation }}
-						  	<template #suffix>Crowdin</template>
-						  </FormLink>
+				<FormSection>
+					<template #label>Misskey Miry Remix</template>
+					<div class="_gaps_s">
+						<FormLink to="https://github.com/catsmiry/misskey" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
+							<template #suffix>GitHub</template>
+						</FormLink>
+					</div>
+				</FormSection>
+				<FormSection>
+					<template #label>CherryPick</template>
+					<div class="_gaps_s">
+						<FormLink to="https://github.com/kokonect-link/cherrypick" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.source }} ({{ i18n.ts._aboutMisskey.original }})
+							<template #suffix>GitHub</template>
+						</FormLink>
+						<FormLink to="https://crowdin.com/project/misskey" external>
+							<template #icon><i class="ti ti-language-hiragana"></i></template>
+							{{ i18n.ts._aboutMisskey.translation }}
+							<template #suffix>Crowdin</template>
+						</FormLink>
   
-						  <FormLink to="https://discord.gg/V8qghB28Aj" external>
-						  	<template #icon><i class="ti ti-brand-discord"></i></template>
-						  	{{ i18n.ts._aboutMisskey._cherrypick.community }}
-						  	<template #suffix>Discord</template>
-						  </FormLink>
+						<FormLink to="https://discord.gg/V8qghB28Aj" external>
+							<template #icon><i class="ti ti-brand-discord"></i></template>
+							{{ i18n.ts._aboutMisskey._cherrypick.community }}
+							<template #suffix>Discord</template>
+						</FormLink>
 						  
-						  <button :class="$style.main" class="_button" @click="donateCherryPick">
-						  	<span :class="$style.icon"><i class="ti ti-pig-money"></i></span>
-						  	<span :class="$style.text">{{ i18n.ts._aboutMisskey._cherrypick.donate }}</span>
-						  	<span :class="$style.suffix">
-						  		<i class="ti ti-external-link"></i>
-						  	</span>
-						  </button>
-						</div>
-					</FormSection>
-					<FormSection>
-						<template #label>Misskey</template>
-						<div class="_gaps_s">
-							<FormLink to="https://github.com/misskey-dev/misskey" external>
-								<template #icon><i class="ti ti-code"></i></template>
-								{{ i18n.ts._aboutMisskey.source }}
-								<template #suffix>GitHub</template>
-							</FormLink>
-							<FormLink to="https://crowdin.com/project/misskey" external>
-								<template #icon><i class="ti ti-language-hiragana"></i></template>
-								{{ i18n.ts._aboutMisskey.translation }}
-								<template #suffix>Crowdin</template>
-							</FormLink>
-							<FormLink to="https://www.patreon.com/syuilo" external>
-								<template #icon><i class="ti ti-pig-money"></i></template>
-								{{ i18n.ts._aboutMisskey.donate }}
-								<template #suffix>Patreon</template>
-							</FormLink>
-						</div>
-					</FormSection>
-					<FormSection v-if="instance.repositoryUrl !== 'https://github.com/catsmiry/misskey'">
-						<div class="_gaps_s">
-							<MkInfo>
-								{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? '' }) }}
-							</MkInfo>
-							<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
-								<template #icon><i class="ti ti-code"></i></template>
-								{{ i18n.ts._aboutMisskey.source }}
-							</FormLink>
-							<FormLink v-if="instance.providesTarball" :to="`/tarball/cherrypick-${version}.tar.gz`" external>
-								<template #icon><i class="ti ti-download"></i></template>
-								{{ i18n.ts._aboutMisskey.source }}
-								<template #suffix>Tarball</template>
-							</FormLink>
-							<MkInfo v-if="!instance.repositoryUrl && !instance.providesTarball" warn>
-								{{ i18n.ts.sourceCodeIsNotYetProvided }}
-							</MkInfo>
-						</div>
-					</FormSection>
-					<FormSection>
-						<template #label>{{ i18n.ts._aboutMisskey.projectMembers }}</template>
-						<div :class="$style.contributors">
-							<a href="https://github.com/catsmiry" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/186817830?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@noridev
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey Miry Remix</span>
-									</span>
+						<button :class="$style.main" class="_button" @click="donateCherryPick">
+							<span :class="$style.icon"><i class="ti ti-pig-money"></i></span>
+							<span :class="$style.text">{{ i18n.ts._aboutMisskey._cherrypick.donate }}</span>
+							<span :class="$style.suffix">
+								<i class="ti ti-external-link"></i>
+							</span>
+						</button>
+					</div>
+				</FormSection>
+				<FormSection>
+					<template #label>Misskey</template>
+					<div class="_gaps_s">
+						<FormLink to="https://github.com/misskey-dev/misskey" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}
+							<template #suffix>GitHub</template>
+						</FormLink>
+						<FormLink to="https://crowdin.com/project/misskey" external>
+							<template #icon><i class="ti ti-language-hiragana"></i></template>
+							{{ i18n.ts._aboutMisskey.translation }}
+							<template #suffix>Crowdin</template>
+						</FormLink>
+						<FormLink to="https://www.patreon.com/syuilo" external>
+							<template #icon><i class="ti ti-pig-money"></i></template>
+							{{ i18n.ts._aboutMisskey.donate }}
+							<template #suffix>Patreon</template>
+						</FormLink>
+					</div>
+				</FormSection>
+				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/catsmiry/misskey'">
+					<div class="_gaps_s">
+						<MkInfo>
+							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name ?? '' }) }}
+						</MkInfo>
+						<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}
+						</FormLink>
+						<FormLink v-if="instance.providesTarball" :to="`/tarball/cherrypick-${version}.tar.gz`" external>
+							<template #icon><i class="ti ti-download"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}
+							<template #suffix>Tarball</template>
+						</FormLink>
+						<MkInfo v-if="!instance.repositoryUrl && !instance.providesTarball" warn>
+							{{ i18n.ts.sourceCodeIsNotYetProvided }}
+						</MkInfo>
+					</div>
+				</FormSection>
+				<FormSection>
+					<template #label>{{ i18n.ts._aboutMisskey.projectMembers }}</template>
+					<div :class="$style.contributors">
+						<a href="https://github.com/catsmiry" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/186817830?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@catsmiry
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey Miry Remix</span>
 								</span>
-							</a>
-							<a href="https://github.com/noridev" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/11006910?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@noridev
-									<span :class="$style.contributorClient">
-										<span :class="$style.cherry">Cherry</span><span :class="$style.pick">Pick</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/noridev" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/11006910?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@noridev
+								<span :class="$style.contributorClient">
+									<span :class="$style.cherry">Cherry</span><span :class="$style.pick">Pick</span>
 								</span>
-							</a>
-							<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@syuilo
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@syuilo
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey</span>
 								</span>
-							</a>
-							<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@acid-chicken
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@acid-chicken
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey</span>
 								</span>
-							</a>
-							<a href="https://github.com/kakkokari-gtyih" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/67428053?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@kakkokari-gtyih
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/kakkokari-gtyih" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/67428053?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@kakkokari-gtyih
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey</span>
 								</span>
-							</a>
-							<a href="https://github.com/tai-cha" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/40626578?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@tai-cha
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/tai-cha" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/40626578?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@tai-cha
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey</span>
 								</span>
-							</a>
-							<a href="https://github.com/samunohito" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/46447427?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@samunohito
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/samunohito" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/46447427?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@samunohito
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey</span>
 								</span>
-							</a>
-							<a href="https://github.com/anatawa12" target="_blank" :class="$style.contributor">
-								<img src="https://avatars.githubusercontent.com/u/22656849?v=4" :class="$style.contributorAvatar">
-								<span :class="$style.contributorUsername">@anatawa12
-									<span :class="$style.contributorClient">
-										<span :class="$style.misskey">Misskey</span>
-									</span>
+							</span>
+						</a>
+						<a href="https://github.com/anatawa12" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/22656849?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@anatawa12
+								<span :class="$style.contributorClient">
+									<span :class="$style.misskey">Misskey</span>
 								</span>
-							</a>
-						</div>
+							</span>
+						</a>
+					</div>
 				</FormSection>
 				<!--
 				<FormSection>

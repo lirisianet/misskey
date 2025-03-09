@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>
 								<span>{{ i18n.ts.validateMinimumUsernameLength }}</span>
 								<span v-if="validateMinimumUsernameLengthChanged" class="_modified">{{ i18n.ts.modified }}</span>
-								<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+								<span class="_beta">{{ i18n.ts._cherrypick.function }}</span>
 							</template>
 							<template #caption>{{ i18n.ts.validateMinimumUsernameLengthDescription }}</template>
 						</MkInput>
