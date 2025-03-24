@@ -4,67 +4,70 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<div v-if="!loading" class="_gaps">
-		<MkInfo>{{ i18n.tsx._profile.avatarDecorationMax({ max: $i.policies.avatarDecorationLimit }) }} ({{ i18n.tsx.remainingN({ n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
+<SearchMarker path="/settings/avatar-decoration" :label="i18n.ts.avatarDecorations" :keywords="['avatar', 'icon', 'decoration']" icon="ti ti-sparkles">
+	<div>
+		<div v-if="!loading" class="_gaps">
+			<MkInfo>{{ i18n.tsx._profile.avatarDecorationMax({ max: $i.policies.avatarDecorationLimit }) }} ({{ i18n.tsx.remainingN({ n: $i.policies.avatarDecorationLimit - $i.avatarDecorations.length }) }})</MkInfo>
 
-		<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration/>
+			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration/>
 
-		<div v-if="$i.avatarDecorations.length > 0" v-panel :class="$style.current" class="_gaps_s">
-			<div>{{ i18n.ts.inUse }}</div>
-			<div :class="$style.decorations">
-				<XDecoration
-					v-for="(avatarDecoration, i) in $i.avatarDecorations"
-					:key="avatarDecoration.id"
-					:decoration="avatarDecorations.find(d => d.id === avatarDecoration.id)"
-					:angle="avatarDecoration.angle"
-					:flipH="avatarDecoration.flipH"
-					:offsetX="avatarDecoration.offsetX"
-					:offsetY="avatarDecoration.offsetY"
-					:scale="avatarDecoration.scale"
-					:opacity="avatarDecoration.opacity"
-					:active="true"
-					@click="openDecoration(avatarDecoration, i)"
-				/>
+			<div v-if="$i.avatarDecorations.length > 0" v-panel :class="$style.current" class="_gaps_s">
+				<div>{{ i18n.ts.inUse }}</div>
+
+				<div :class="$style.decorations">
+					<XDecoration
+						v-for="(avatarDecoration, i) in $i.avatarDecorations"
+						:key="avatarDecoration.id"
+						:decoration="avatarDecorations.find(d => d.id === avatarDecoration.id)"
+						:angle="avatarDecoration.angle"
+						:flipH="avatarDecoration.flipH"
+						:offsetX="avatarDecoration.offsetX"
+						:offsetY="avatarDecoration.offsetY"
+						:scale="avatarDecoration.scale"
+						:opacity="avatarDecoration.opacity"
+						:active="true"
+						@click="openDecoration(avatarDecoration, i)"
+					/>
+				</div>
+
+				<MkButton danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
 			</div>
 
-			<MkButton danger @click="detachAllDecorations">{{ i18n.ts.detachAll }}</MkButton>
+			<MkFolder>
+				<template #label>{{ i18n.ts.local }}</template>
+				<div :class="$style.decorations">
+					<XDecoration
+						v-for="localAvatarDecoration in visibleLocalDecorations"
+						:key="localAvatarDecoration.id"
+						:decoration="localAvatarDecoration"
+						@click="openLocalDecoration(localAvatarDecoration)"
+					/>
+				</div>
+				<MkButton v-if="hasMoreLocalDecorations" class="mt-4" @click="loadMoreLocalDecorations">
+					{{ i18n.ts.loadMore }}
+				</MkButton>
+			</MkFolder>
+
+			<MkFolder v-if="$i.policies.canUseRemoteAvatarDecorations">
+				<template #label>{{ i18n.ts.remote }}<span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
+				<div :class="$style.decorations">
+					<XDecoration
+						v-for="remoteAvatarDecoration in visibleRemoteDecorations"
+						:key="remoteAvatarDecoration.id"
+						:decoration="remoteAvatarDecoration"
+						@click="openRemoteDecoration(remoteAvatarDecoration)"
+					/>
+				</div>
+				<MkButton v-if="hasMoreRemoteDecorations" class="mt-4" @click="loadMoreRemoteDecorations">
+					{{ i18n.ts.loadMore }}
+				</MkButton>
+			</MkFolder>
 		</div>
-
-		<MkFolder>
-			<template #label>{{ i18n.ts.local }}</template>
-			<div :class="$style.decorations">
-				<XDecoration
-					v-for="localAvatarDecoration in visibleLocalDecorations"
-					:key="localAvatarDecoration.id"
-					:decoration="localAvatarDecoration"
-					@click="openLocalDecoration(localAvatarDecoration)"
-				/>
-			</div>
-			<MkButton v-if="hasMoreLocalDecorations" class="mt-4" @click="loadMoreLocalDecorations">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
-		</MkFolder>
-
-		<MkFolder v-if="$i.policies.canUseRemoteAvatarDecorations">
-			<template #label>{{ i18n.ts.remote }}<span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
-			<div :class="$style.decorations">
-				<XDecoration
-					v-for="remoteAvatarDecoration in visibleRemoteDecorations"
-					:key="remoteAvatarDecoration.id"
-					:decoration="remoteAvatarDecoration"
-					@click="openRemoteDecoration(remoteAvatarDecoration)"
-				/>
-			</div>
-			<MkButton v-if="hasMoreRemoteDecorations" class="mt-4" @click="loadMoreRemoteDecorations">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
-		</MkFolder>
+		<div v-else>
+			<MkLoading/>
+		</div>
 	</div>
-	<div v-else>
-		<MkLoading/>
-	</div>
-</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -73,14 +76,14 @@ import * as Misskey from 'cherrypick-js';
 import XDecoration from './avatar-decoration.decoration.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const ITEMS_PER_PAGE = 25;
 
@@ -285,7 +288,7 @@ function detachAllDecorations() {
 const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.avatarDecorations,
 	icon: 'ti ti-sparkles',
 }));

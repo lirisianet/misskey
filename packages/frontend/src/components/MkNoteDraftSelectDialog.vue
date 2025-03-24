@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination ref="pagingEl" :pagination="paging">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts._drafts.noDrafts }}</div>
 				</div>
 			</template>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 							</div>
 							<div :class="$style.draftVisibility">
-								<MkTime style="margin-left: 0.5em;" :time="draft.createdAt" :mode="defaultStore.state.enableAbsoluteTime ? 'absolute' : 'relative'" colored/>
+								<MkTime style="margin-left: 0.5em;" :time="draft.createdAt" :mode="prefer.s.enableAbsoluteTime ? 'absolute' : 'relative'" colored/>
 								<span v-if="draft.deleteAt" style="margin-left: 0.5em;"><i v-tooltip="`${i18n.ts.scheduledNoteDelete}: ${(new Date(draft.deleteAt)).toLocaleString()}`" class="ti ti-bomb"></i></span>
 								<span style="margin-left: 0.5em;" :title="i18n.ts._visibility[draft.visibility]">
 									<i v-if="draft.visibility === 'public'" class="ti ti-world"></i>
@@ -93,17 +93,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, useTemplateRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'cherrypick-js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { infoImageUrl } from '@/instance.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.NoteDraft): void;
@@ -119,7 +119,7 @@ const paging = {
 const pagingComponent = useTemplateRef('pagingEl');
 
 const selected = ref<Misskey.entities.NoteDraft | null>(null);
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 let lockId: string | null = null;
 let lockTimer: number | null = null;

@@ -5500,6 +5500,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canNote: boolean;
+      btlAvailable: boolean;
       canPublicNote: boolean;
       mentionLimit: number;
       canInvite: boolean;

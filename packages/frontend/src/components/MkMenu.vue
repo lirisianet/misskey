@@ -15,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@focusin.passive.stop="() => {}"
 >
 	<div
-		v-vibrate="defaultStore.state.vibrateSystem ? 5 : []"
+		v-vibrate="prefer.s['vibrate.on.system'] ? 5 : []"
 		class="_shadow"
 		:class="[
 			$style.menu,
 			{
-				_popup: !defaultStore.state.useBlurEffect || !defaultStore.state.useBlurEffectForModal || !defaultStore.state.removeModalBgColorForBlur,
-				_popupAcrylic: defaultStore.state.useBlurEffect && defaultStore.state.useBlurEffectForModal && defaultStore.state.removeModalBgColorForBlur,
+				_popup: !prefer.s.useBlurEffect || !prefer.s.useBlurEffectForModal || !prefer.s.removeModalBgColorForBlur,
+				_popupAcrylic: prefer.s.useBlurEffect && prefer.s.useBlurEffectForModal && prefer.s.removeModalBgColorForBlur,
 			}
 		]"
 		:style="{
@@ -46,6 +46,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 					<span><MkEllipsis/></span>
 				</span>
+				<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+					<component :is="item.component" v-bind="item.props"/>
+				</div>
 				<MkA
 					v-else-if="item.type === 'link'"
 					role="menuitem"
@@ -189,16 +192,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, unref, watch } from 'vue';
-import type { Keymap } from '@/scripts/hotkey.js';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef } from 'vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
+import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { isTouchUsing } from '@/scripts/touch.js';
-import { isFocusable } from '@/scripts/focus.js';
-import { getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
-import { defaultStore } from '@/store.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { isFocusable } from '@/utility/focus.js';
+import { getNodeOrNull } from '@/utility/get-dom-node-or-null.js';
+import { prefer } from '@/preferences.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
@@ -223,11 +226,11 @@ const big = isTouchUsing;
 
 const isNestingMenu = inject<boolean>('isNestingMenu', false);
 
-const itemsEl = shallowRef<HTMLElement>();
+const itemsEl = useTemplateRef('itemsEl');
 
 const items2 = ref<InnerMenuItem[]>();
 
-const child = shallowRef<InstanceType<typeof XChild>>();
+const child = useTemplateRef('child');
 
 const keymap = {
 	'up|k|shift+tab': {
@@ -268,7 +271,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-const childTarget = shallowRef<HTMLElement | null>();
+const childTarget = shallowRef<HTMLElement>();
 
 function closeChild() {
 	childMenu.value = null;
@@ -369,10 +372,10 @@ function switchItem(item: MenuSwitch & { ref: any }) {
 
 function focusUp() {
 	if (disposed) return;
-	if (!itemsEl.value?.contains(document.activeElement)) return;
+	if (!itemsEl.value?.contains(window.document.activeElement)) return;
 
 	const focusableElements = Array.from(itemsEl.value.children).filter(isFocusable);
-	const activeIndex = focusableElements.findIndex(el => el === document.activeElement);
+	const activeIndex = focusableElements.findIndex(el => el === window.document.activeElement);
 	const targetIndex = (activeIndex !== -1 && activeIndex !== 0) ? (activeIndex - 1) : (focusableElements.length - 1);
 	const targetElement = focusableElements.at(targetIndex) ?? itemsEl.value;
 
@@ -381,10 +384,10 @@ function focusUp() {
 
 function focusDown() {
 	if (disposed) return;
-	if (!itemsEl.value?.contains(document.activeElement)) return;
+	if (!itemsEl.value?.contains(window.document.activeElement)) return;
 
 	const focusableElements = Array.from(itemsEl.value.children).filter(isFocusable);
-	const activeIndex = focusableElements.findIndex(el => el === document.activeElement);
+	const activeIndex = focusableElements.findIndex(el => el === window.document.activeElement);
 	const targetIndex = (activeIndex !== -1 && activeIndex !== (focusableElements.length - 1)) ? (activeIndex + 1) : 0;
 	const targetElement = focusableElements.at(targetIndex) ?? itemsEl.value;
 
@@ -411,9 +414,9 @@ const onGlobalMousedown = (ev: MouseEvent) => {
 
 const setupHandlers = () => {
 	if (!isNestingMenu) {
-		document.addEventListener('focusin', onGlobalFocusin, { passive: true });
+		window.document.addEventListener('focusin', onGlobalFocusin, { passive: true });
 	}
-	document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
+	window.document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
 };
 
 let disposed = false;
@@ -421,9 +424,9 @@ let disposed = false;
 const disposeHandlers = () => {
 	disposed = true;
 	if (!isNestingMenu) {
-		document.removeEventListener('focusin', onGlobalFocusin);
+		window.document.removeEventListener('focusin', onGlobalFocusin);
 	}
-	document.removeEventListener('mousedown', onGlobalMousedown);
+	window.document.removeEventListener('mousedown', onGlobalMousedown);
 };
 
 onMounted(() => {
@@ -579,11 +582,11 @@ onBeforeUnmount(() => {
 	}
 
 	&.danger {
-		--menuFg: #ff2a2a;
+		--menuFg: var(--MI_THEME-error);
 		--menuHoverFg: #fff;
-		--menuHoverBg: #ff4242;
+		--menuHoverBg: var(--MI_THEME-error);
 		--menuActiveFg: #fff;
-		--menuActiveBg: #d42e2e;
+		--menuActiveBg: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 	}
 
 	&.radio {
