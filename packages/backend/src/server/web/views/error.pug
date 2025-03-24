@@ -1,72 +1,35 @@
 doctype html
 
-//
-    -
-    ___  ____         _               ___  ____             ______               _      
-    |  \/  (_)       | |              |  \/  (_)            | ___ \             (_)     
-    | .  . |_ ___ ___| | _____ _   _  | .  . |_ _ __ _   _  | |_/ /___ _ __ ___  ___  __
-    | |\/| | / __/ __| |/ / _ \ | | | | |\/| | | '__| | | | |    // _ \ '_ ` _ \| \ \/ /
-    | |  | | \__ \__ \   <  __/ |_| | | |  | | | |  | |_| | | |\ \  __/ | | | | | |>  < 
-    \_|  |_/_|___/___/_|\_\___|\__, | \_|  |_/_|_|   \__, | \_| \_\___|_| |_| |_|_/_/\_\
-                                __/ |                 __/ |                             
-                               |___/                 |___/                              
-        Thank you for using Misskey Miry Remix!
-        If you are reading this message... how about joining the development?
-        https://github.com/catsmiry/misskey
-
 html
-    head
-        meta(charset='utf-8')
-        meta(name='viewport' content='width=device-width, initial-scale=1')
-        meta(name='application-name' content='Misskey')
-        meta(name='referrer' content='origin')
+	head
+		meta(charset='utf-8')
+		meta(name='viewport' content='width=device-width, initial-scale=1')
+		meta(name='application-name' content='CherryPick')
+		meta(name='referrer' content='origin')
+		title Error: CherryPick
+		style
+			include ../error.css
 
-        title
-            block title
-                = 'An error has occurred... | Misskey'
-
-        style
-            include ../error.css
-
-		script
-			include ../error.js
+	script
+		include ../error.js
 
 body
-    svg.icon-warning(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24", stroke-width="2", stroke="currentColor", fill="none", stroke-linecap="round", stroke-linejoin="round")
-        path(stroke="none", d="M0 0h24v24H0z", fill="none")
-        path(d="M12 9v2m0 4v.01")
-        path(d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75")
-
-	h1(data-i18n="title") Failed to initialize CherryPick
-
-	button.button-big(onclick="location.reload();")
-		span.button-label-big(data-i18n-reload) Reload
-
-	p(data-i18n="serverError") If reloading after a period of time does not resolve the problem, contact the server administrator with the following ERROR ID.
-
-    div#errors
-        code.
-            ERROR CODE: #{code}
-            ERROR ID: #{id}
-
-	p
-		b(data-i18n="solution") The following actions may solve the problem.
-
-	p(data-i18n="solution1") Update your os and browser
-	p(data-i18n="solution2") Disable an adblocker
-	p(data-i18n="solution3") Clear your browser cache
-	p(data-i18n="solution4") (Tor Browser) Set dom.webaudio.enabled to true
-
-	details(style="color: rgb(255, 188, 220);")
-		summary(data-i18n="otherOption") Other options
-		a(href="/flush")
-			button.button-small
-				span.button-label-small(data-i18n="otherOption1") Clear preferences and cache
-		br
-		a(href="/cli")
-			button.button-small
-				span.button-label-small(data-i18n="otherOption2") Start the simple client
-		br
-		a(href="/bios")
-			button.button-small
-				span.button-label-small(data-i18n="otherOption3") Start the repair tool
+	svg(class='icon')
+		use(xlink:href='#icon-warning')
+	h1(data-i18n='title')
+	p(data-i18n='serverError' v-if='SERVER_ERROR')
+	p(v-if='SERVER_ERROR') ERROR CODE: {{ errorId }}
+	details
+		summary(data-i18n='solution')
+		ul
+			li
+				a(href='https://github.com/misskey-dev/misskey/wiki/Troubleshooting#%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97%E3%82%A2%E3%83%97%E3%83%AA%E7%89%88%E3%81%A7%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84%E5%A0%B4%E5%90%88' target='_blank' rel='noopener') data-i18n='solution1')
+			li(data-i18n='solution2')
+			li(data-i18n='solution3')
+			li(data-i18n='solution4')
+	details(v-if='SERVER_ERROR')
+		summary(data-i18n='otherOption')
+		button(class='button-big' onclick='location.reload(true);' data-i18n-reload)
+		button(class='button-big' onclick='localStorage.clear();location.reload(true);' data-i18n='otherOption1')
+		button(class='button-big' onclick='location.href="/flush";' data-i18n='otherOption2')
+		button(class='button-big' onclick='location.href="/cli";' data-i18n='otherOption3')
