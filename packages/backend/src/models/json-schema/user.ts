@@ -297,10 +297,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			example: '2018-03-12',
 		},
 		ListenBrainz: {
-			type: "string",
+			type: 'string',
 			nullable: true,
 			optional: false,
-			example: "Steve",
+			example: 'Steve',
 		},
 		lang: {
 			type: 'string',
@@ -526,6 +526,10 @@ export const packedMeDetailedOnlySchema = {
 			nullable: false, optional: false,
 		},
 		autoFollowBack: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
+		blockDeliver: {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},

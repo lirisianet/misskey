@@ -4457,6 +4457,7 @@ export type components = {
       carefulBot: boolean;
       autoAcceptFollowed: boolean;
       autoFollowBack: boolean;
+      blockDeliver: boolean;
       noCrawle: boolean;
       preventAiLearning: boolean;
       isExplorable: boolean;
@@ -24250,6 +24251,7 @@ export type operations = {
           carefulBot?: boolean;
           autoAcceptFollowed?: boolean;
           autoFollowBack?: boolean;
+          blockDeliver?: boolean;
           noCrawle?: boolean;
           preventAiLearning?: boolean;
           requireSigninToViewContents?: boolean;

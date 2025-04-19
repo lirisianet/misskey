@@ -6190,6 +6190,14 @@ export interface Locale extends ILocale {
      * フォローされた際に自動でフォローバックします。
      */
     "autoFollowBackDescription": string;
+    /**
+     * ブロックしたユーザーにアクティビティを配送する。
+     */
+    "blockDeliver": string;
+    /**
+     * ブロックしたユーザーにアクティビティを配送します。これにより、ブロックしたユーザーはあなたがブロックしたことを知ることができます。
+     */
+    "blockDeliverDescription": string;
     "_nsfwOpenBehavior": {
         /**
          * タップして開く

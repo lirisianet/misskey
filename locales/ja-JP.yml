@@ -1540,6 +1540,8 @@ muteThisUserIsProhibited: "サーバー管理者はこのユーザーをミュ�
 unfollowThisUserProhibited: "このユーザーのフォロー解除は禁止されています。"
 autoFollowBack: "自動フォローバック"
 autoFollowBackDescription: "フォローされた際に自動でフォローバックします。"
+blockDeliver: "ブロックしたユーザーにアクティビティを配送する。"
+blockDeliverDescription: "ブロックしたユーザーにアクティビティを配送します。これにより、ブロックしたユーザーはあなたがブロックしたことを知ることができます。"
 
 _nsfwOpenBehavior:
   click: "タップして開く"

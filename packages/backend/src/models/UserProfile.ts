@@ -36,10 +36,10 @@ export class MiUserProfile {
 	})
 	public birthday: string | null;
 
-	@Column("varchar", {
+	@Column('varchar', {
 		length: 128,
 		nullable: true,
-		comment: "The ListenBrainz username of the User.",
+		comment: 'The ListenBrainz username of the User.',
 	})
 	public listenbrainz: string | null;
 
@@ -184,6 +184,11 @@ export class MiUserProfile {
 		default: false,
 	})
 	public autoFollowBack: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public blockDeliver: boolean;
 
 	@Column('boolean', {
 		default: false,

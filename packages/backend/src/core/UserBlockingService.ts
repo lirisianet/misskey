@@ -13,7 +13,7 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, FollowHistoryRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type { FollowRequestsRepository, FollowHistoryRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository, UserProfilesRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -50,6 +50,9 @@ export class UserBlockingService implements OnModuleInit {
 
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
 		private roleService: RoleService,
 		private notificationService: NotificationService,
@@ -107,8 +110,13 @@ export class UserBlockingService implements OnModuleInit {
 		});
 
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderBlock(blocking));
-			this.queueService.deliver(blocker, content, blockee.inbox, false);
+			// ブロックするユーザーの設定に基づいて、ブロックアクティビティを送信するかどうかを判断
+			const blockerProfile = await this.userProfilesRepository.findOneBy({ userId: blocker.id });
+			
+			if (blockerProfile?.blockDeliver === true) {
+				const content = this.apRendererService.addContext(this.apRendererService.renderBlock(blocking));
+				this.queueService.deliver(blocker, content, blockee.inbox, false);
+			}
 		}
 
 		const policies = await this.roleService.getUserPolicies(blockee.id);

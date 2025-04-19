@@ -32,6 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
+		<SearchMarker :keywords="['block', 'deliver', 'activity']">
+			<MkSwitch v-model="blockDeliver" @update:modelValue="save()">
+				<template #label><SearchLabel>{{ i18n.ts.blockDeliver }}</SearchLabel><span class="_beta">{{ i18n.ts._cherrypick.function }}</span></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.blockDeliverDescription }}</SearchKeyword></template>
+			</MkSwitch>
+		</SearchMarker>
+
 		<SearchMarker :keywords="['reaction', 'public']">
 			<MkSwitch v-model="publicReactions" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.makeReactionsPublic }}</SearchLabel></template>
@@ -232,6 +239,7 @@ const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
 const chatScope = ref($i.chatScope);
+const blockDeliver = ref($i.blockDeliver);
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
 	if (makeNotesFollowersOnlyBefore.value == null) {
@@ -287,6 +295,7 @@ function save() {
 		followingVisibility: followingVisibility.value,
 		followersVisibility: followersVisibility.value,
 		chatScope: chatScope.value,
+		blockDeliver: !!blockDeliver.value,
 	});
 }
 
